@@ -1,3 +1,5 @@
+import 'package:attendance_app/screens/homePageF.dart';
+import 'package:attendance_app/screens/signIn.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -9,12 +11,8 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return MaterialApp(
+      home: HomePageF(),
     );
   }
 }
