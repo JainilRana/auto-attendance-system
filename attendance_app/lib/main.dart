@@ -1,8 +1,26 @@
 import 'package:attendance_app/screens/homePageF.dart';
 import 'package:attendance_app/screens/signIn.dart';
+import 'package:attendance_app/screens/signUp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:attendance_app/firebase_options.dart';
 
-void main() {
+Widget startScreen = SignIn();
+getCurrentUser() {
+  return FirebaseAuth.instance.currentUser;
+}
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    if (user != null) {
+      startScreen = HomePageF();
+    }
+  });
   runApp(const MainApp());
 }
 
@@ -12,7 +30,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: HomePageF(),
+      home: startScreen,
     );
   }
 }

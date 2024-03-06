@@ -1,14 +1,16 @@
+import 'package:attendance_app/main.dart';
 import 'package:attendance_app/screens/homePageF.dart';
-import 'package:attendance_app/screens/signUp.dart';
+import 'package:attendance_app/screens/signIn.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class SignIn extends StatelessWidget {
+class SignUp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    TextEditingController siEmailController = TextEditingController();
-    TextEditingController siPaswdController = TextEditingController();
+    TextEditingController suNameController = TextEditingController();
+    TextEditingController suEmailController = TextEditingController();
+    TextEditingController suPaswdController = TextEditingController();
     return Scaffold(
       body: Center(
         child: Padding(
@@ -19,7 +21,7 @@ class SignIn extends StatelessWidget {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Sign In to your\naccount',
+                  'Sign Up to your\naccount',
                   style: GoogleFonts.rubik(
                     textStyle: TextStyle(
                       fontSize: 40,
@@ -30,10 +32,37 @@ class SignIn extends StatelessWidget {
               ),
               SizedBox(height: 40),
 
+              // Name field
+              TextFormField(
+                autofocus: true,
+                controller: suNameController,
+                cursorRadius: Radius.circular(15),
+                maxLines: 1,
+                keyboardType: TextInputType.name,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(15),
+                  prefixIcon: Icon(
+                    Icons.person,
+                    color: Colors.black,
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  hintText: 'Name',
+                  hintStyle: TextStyle(
+                    color: Colors.grey[500],
+                  ),
+                  fillColor: Colors.grey[100],
+                  filled: true,
+                ),
+              ),
+              SizedBox(height: 20),
+
               // Email field
               TextFormField(
                 autofocus: true,
-                controller: siEmailController,
+                controller: suEmailController,
                 cursorRadius: Radius.circular(15),
                 maxLines: 1,
                 keyboardType: TextInputType.emailAddress,
@@ -60,7 +89,7 @@ class SignIn extends StatelessWidget {
               // Password field
               TextFormField(
                 autofocus: true,
-                controller: siPaswdController,
+                controller: suPaswdController,
                 cursorRadius: Radius.circular(15),
                 maxLines: 1,
                 obscureText: true,
@@ -90,27 +119,37 @@ class SignIn extends StatelessWidget {
                       onPressed: () async {
                         try {
                           final credential = await FirebaseAuth.instance
-                              .signInWithEmailAndPassword(
-                            email: siEmailController.text.toString(),
-                            password: siPaswdController.text.toString(),
+                              .createUserWithEmailAndPassword(
+                            email: suEmailController.text.toString(),
+                            password: suPaswdController.text.toString(),
                           )
                               .then((value) {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomePageF(),
-                              ),
-                            );
+                            if (getCurrentUser() != null) {
+                              getCurrentUser()
+                                  ?.updateDisplayName(
+                                      suNameController.text.toString())
+                                  .then((value) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => HomePageF(),
+                                  ),
+                                );
+                              });
+                              print(suNameController.text.toString());
+                            }
                           });
                         } on FirebaseAuthException catch (e) {
-                          if (e.code == 'user-not-found') {
-                            print('No user found for that email.');
-                          } else if (e.code == 'wrong-password') {
-                            print('Wrong password provided for that user.');
+                          if (e.code == 'weak-password') {
+                            print('The password provided is too weak.');
+                          } else if (e.code == 'email-already-in-use') {
+                            print('The account already exists for that email.');
                           }
+                        } catch (e) {
+                          print(e);
                         }
                       },
-                      child: Text('Sign In'),
+                      child: Text('Sign Up'),
                       style: TextButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
@@ -130,17 +169,17 @@ class SignIn extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Don't have an account? "),
+                  Text("Already have an account? "),
                   TextButton(
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SignUp(),
+                            builder: (context) => SignIn(),
                           ),
                         );
                       },
-                      child: Text('Sign Up'))
+                      child: Text('Sign In'))
                 ],
               ),
             ],
