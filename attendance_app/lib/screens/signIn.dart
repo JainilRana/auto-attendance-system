@@ -1,3 +1,5 @@
+import 'package:attendance_app/main.dart';
+import 'package:attendance_app/screens/homePageA.dart';
 import 'package:attendance_app/screens/homePageF.dart';
 import 'package:attendance_app/screens/signUp.dart';
 import 'package:flutter/material.dart';
@@ -98,7 +100,14 @@ class SignIn extends StatelessWidget {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => HomePageF(),
+                                builder: (context) {
+                                  if (getCurrentUser().email ==
+                                      'admin@charusat.edu.in') {
+                                    return HomePageA();
+                                  } else {
+                                    return HomePageF();
+                                  }
+                                },
                               ),
                             );
                           });

@@ -21,10 +21,11 @@ class _TitleDropDownState extends State<TitleDropDown> {
         Text(
           widget.title!,
           style: GoogleFonts.rubik(
-              textStyle: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
-          )),
+            textStyle: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ),
         SizedBox(
           width: 20,

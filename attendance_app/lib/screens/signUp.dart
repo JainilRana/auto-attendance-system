@@ -1,4 +1,5 @@
 import 'package:attendance_app/main.dart';
+import 'package:attendance_app/screens/homePageA.dart';
 import 'package:attendance_app/screens/homePageF.dart';
 import 'package:attendance_app/screens/signIn.dart';
 import 'package:flutter/material.dart';
@@ -126,14 +127,19 @@ class SignUp extends StatelessWidget {
                               .then((value) {
                             if (getCurrentUser() != null) {
                               getCurrentUser()
-                                  ?.updateDisplayName(
+                                  .updateDisplayName(
                                       suNameController.text.toString())
                                   .then((value) {
                                 Navigator.pushReplacement(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) => HomePageF(),
-                                  ),
+                                  MaterialPageRoute(builder: (context) {
+                                    if (getCurrentUser().email ==
+                                        'admin@charusat.edu.in') {
+                                      return HomePageA();
+                                    } else {
+                                      return HomePageF();
+                                    }
+                                  }),
                                 );
                               });
                               print(suNameController.text.toString());

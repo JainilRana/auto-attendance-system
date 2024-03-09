@@ -1,3 +1,4 @@
+import 'package:attendance_app/screens/homePageA.dart';
 import 'package:attendance_app/screens/homePageF.dart';
 import 'package:attendance_app/screens/signIn.dart';
 import 'package:attendance_app/screens/signUp.dart';
@@ -17,8 +18,12 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseAuth.instance.authStateChanges().listen((User? user) {
-    if (user != null) {
+    if (user != null && user.email == 'admin@charusat.edu.in') {
+      startScreen = HomePageA();
+    } else if (user != null) {
       startScreen = HomePageF();
+    } else {
+      startScreen = SignIn();
     }
   });
   runApp(const MainApp());
