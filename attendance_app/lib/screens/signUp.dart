@@ -119,6 +119,63 @@ class SignUp extends StatelessWidget {
                   Expanded(
                     child: TextButton(
                       onPressed: () async {
+                        bool flag = false;
+                        if (suNameController.text.isEmpty ||
+                            suEmailController.text.isEmpty ||
+                            suPaswdController.text.isEmpty) {
+                          Fluttertoast.showToast(
+                            msg: suNameController.text.isEmpty
+                                ? 'Please enter your name.'
+                                : suEmailController.text.isEmpty
+                                    ? 'Please enter email.'
+                                    : 'Please enter password.',
+                            backgroundColor: Colors.red,
+                            fontSize: 20,
+                            textColor: Colors.white,
+                            gravity: ToastGravity.BOTTOM,
+                            webBgColor:
+                                "	linear-gradient(to right, #F44336, #F44336)",
+                            timeInSecForIosWeb: 2,
+                            webPosition: "center",
+                            webShowClose: true,
+                          );
+                          return;
+                        }
+                        if (flag == false) {
+                          await db.collection('faculty_id').get().then((value) {
+                            value.docs.forEach((element) {
+                              if (element.id.toLowerCase() ==
+                                  suEmailController.text.toLowerCase()) {
+                                flag = true;
+                              }
+                            });
+                          });
+                        }
+                        if (flag == false) {
+                          await db.collection('student_id').get().then((value) {
+                            value.docs.forEach((element) {
+                              if (element.id.toLowerCase() ==
+                                  suEmailController.text.toLowerCase()) {
+                                flag = true;
+                              }
+                            });
+                          });
+                        }
+                        if (flag == false) {
+                          Fluttertoast.showToast(
+                            msg: 'Please use institute email id.',
+                            backgroundColor: Colors.red,
+                            fontSize: 20,
+                            textColor: Colors.white,
+                            gravity: ToastGravity.BOTTOM,
+                            webBgColor:
+                                "	linear-gradient(to right, #F44336, #F44336)",
+                            timeInSecForIosWeb: 2,
+                            webPosition: "center",
+                            webShowClose: true,
+                          );
+                          return;
+                        }
                         try {
                           final credential = await FirebaseAuth.instance
                               .createUserWithEmailAndPassword(
