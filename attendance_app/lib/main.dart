@@ -1,13 +1,14 @@
 import 'package:attendance_app/screens/homePageA.dart';
 import 'package:attendance_app/screens/homePageF.dart';
 import 'package:attendance_app/screens/signIn.dart';
-import 'package:attendance_app/screens/signUp.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:attendance_app/firebase_options.dart';
 
 Widget startScreen = SignIn();
+var db = FirebaseFirestore.instance;
 getCurrentUser() {
   return FirebaseAuth.instance.currentUser;
 }

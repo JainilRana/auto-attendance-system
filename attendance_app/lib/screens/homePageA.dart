@@ -10,7 +10,7 @@ class HomePageA extends StatefulWidget {
 }
 
 class _HomePageAState extends State<HomePageA> {
-  var subPage;
+  var subPage = 'faculty_id';
 
   @override
   Widget build(BuildContext context) {

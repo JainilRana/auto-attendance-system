@@ -1,75 +1,201 @@
+import 'package:attendance_app/main.dart';
 import 'package:attendance_app/widgets/addDelDropdown.dart';
-import 'package:attendance_app/widgets/titleDropDown.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:excel/excel.dart';
 
-var dept, year, div, batch; // List of no. & names in that batch in excel format
+Set<String> deptS = {},
+    yearS = {},
+    divS = {},
+    batcheS = {},
+    locS = {}; // List of no. & names in that batch in excel format
+String? dept, year, div, batch, loc;
+
+fetchDropdowns() async {
+  await db.collection('dropdowns').doc('Department').get().then((value) {
+    deptS = value.data() != null ? Set<String>.from(value.data()!['li']) : {};
+  });
+  await db.collection('dropdowns').doc('Year').get().then((value) {
+    yearS = value.data() != null ? Set<String>.from(value.data()!['li']) : {};
+  });
+  await db.collection('dropdowns').doc('Division').get().then((value) {
+    divS = value.data() != null ? Set<String>.from(value.data()!['li']) : {};
+  });
+  await db.collection('dropdowns').doc('Batch').get().then((value) {
+    batcheS = value.data() != null ? Set<String>.from(value.data()!['li']) : {};
+  });
+  await db.collection('dropdowns').doc('Location').get().then((value) {
+    locS = value.data() != null ? Set<String>.from(value.data()!['li']) : {};
+  });
+  print('fetchdropdowns $deptS, $yearS, $divS, $batcheS $locS');
+}
 
 class AddData extends StatefulWidget {
   var dataKey;
-
   AddData({this.dataKey});
-
   @override
   State<AddData> createState() => _AddDataState();
 }
 
 class _AddDataState extends State<AddData> {
   @override
+  void initState() {
+    super.initState();
+    fetchDropdowns();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(25),
-      elevation: 10,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(15),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            AddDelDD('Select Department', []),
-            AddDelDD('Select Year', []),
-            AddDelDD('Select Division', []),
-            AddDelDD('Select Batch', []),
-            TextButton.icon(
-              onPressed: () async {
-                FilePickerResult? pickedFile =
-                    await FilePicker.platform.pickFiles(
-                  type: FileType.custom,
-                  allowedExtensions: ['xlsx'],
-                  allowMultiple: false,
-                );
-                if (pickedFile != null) {
-                  var bytes = pickedFile.files.single.bytes;
-                  var excel = Excel.decodeBytes(bytes!);
-                  for (var table in excel.tables.keys) {
-                    for (int i = 0; i < excel.tables[table]!.rows.length; i++) {
-                      print(
-                          '${excel.tables[table]!.selectRangeValues(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: 0), end: CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: excel.tables[table]!.rows.length - 1))[i]![0]}');
-                      print(
-                          '${excel.tables[table]!.selectRangeValues(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: 0), end: CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: excel.tables[table]!.rows.length - 1))[i]![0]}');
-                    }
-                  }
-                } else {
-                  print('No file selected');
-                }
-              },
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.all(20),
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.blue,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
+    return FutureBuilder(
+      future: fetchDropdowns(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        return Card(
+          margin: EdgeInsets.all(25),
+          elevation: 10,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(15),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  "Add Student Data",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              icon: Icon(Icons.upload_file_rounded),
-              label: Text('Upload Excel File'),
+                AddDelDD('Select Department'),
+                AddDelDD('Select Year'),
+                AddDelDD('Select Division'),
+                AddDelDD('Select Batch'),
+                AddDelDD('Select Location'),
+                TextButton.icon(
+                  onPressed: () async {
+                    FilePickerResult? pickedFile =
+                        await FilePicker.platform.pickFiles(
+                      type: FileType.custom,
+                      allowedExtensions: ['xlsx'],
+                      allowMultiple: false,
+                    );
+                    if (pickedFile != null) {
+                      dynamic data = {};
+                      var bytes = pickedFile.files.single.bytes;
+                      var excel = Excel.decodeBytes(bytes!);
+                      for (var table in excel.tables.keys) {
+                        for (int i = 0;
+                            i < excel.tables[table]!.rows.length - 1;
+                            i++) {
+                          data.addAll({
+                            excel.tables[table]!
+                                .selectRangeValues(
+                                  CellIndex.indexByColumnRow(
+                                      columnIndex: 0, rowIndex: 1),
+                                  end: CellIndex.indexByColumnRow(
+                                    columnIndex: 0,
+                                    rowIndex:
+                                        excel.tables[table]!.rows.length - 1,
+                                  ),
+                                )[i]![0]
+                                .toString(): excel.tables[table]!
+                                .selectRangeValues(
+                                  CellIndex.indexByColumnRow(
+                                      columnIndex: 1, rowIndex: 1),
+                                  end: CellIndex.indexByColumnRow(
+                                      columnIndex: 1,
+                                      rowIndex:
+                                          excel.tables[table]!.rows.length - 1),
+                                )[i]![0]
+                                .toString()
+                          });
+                        }
+                        db.collection('student_data').doc(dept).get().then(
+                          (value) {
+                            if (value.data() != null) {
+                              var studentData = value.data()!.map((key, value) {
+                                return MapEntry(key, value);
+                              });
+                              print(studentData.toString());
+                              if (studentData.containsKey(year)) {
+                                if (studentData[year].containsKey(div)) {
+                                  if (studentData[year][div]
+                                      .containsKey(batch)) {
+                                    studentData[year]![div]![batch] = data;
+                                  } else {
+                                    studentData[year]![div]
+                                        .addAll(<String, dynamic>{
+                                      batch!: data,
+                                    });
+                                  }
+                                } else {
+                                  studentData[year!].addAll(<String, dynamic>{
+                                    div!: {
+                                      batch: data,
+                                    },
+                                  });
+                                }
+                              } else {
+                                studentData.addAll(<String, dynamic>{
+                                  year!: {
+                                    div: {
+                                      batch: data,
+                                    },
+                                  },
+                                });
+                              }
+                              print(studentData.toString());
+                              db.collection('student_data').doc(dept).set(
+                                    studentData,
+                                  );
+                            } else {
+                              print('here $dept, $year, $div, $batch, $data');
+                              db.collection('student_data').doc(dept).set(
+                                {
+                                  year!: {
+                                    div: {
+                                      batch: data,
+                                    },
+                                  },
+                                },
+                              );
+                            }
+                          },
+                        );
+                      }
+                    } else {
+                      print('No file selected');
+                    }
+                  },
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.all(20),
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  icon: Icon(Icons.upload_file_rounded),
+                  label: Text('Upload Excel File'),
+                ),
+                Text(
+                  "**Upload Excel(.xlsx) file with only two columns,\ncontaining all IDs & Names of students with 'ID' & 'Name' as title**",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

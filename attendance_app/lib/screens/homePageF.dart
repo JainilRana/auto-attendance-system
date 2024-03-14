@@ -120,30 +120,27 @@ class _HomePageFState extends State<HomePageF> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      TitleDropDown('Select Department:', ['CSE']),
+                      TitleDropDown('Select Department'),
                       SizedBox(
                         height: 20,
                       ),
-                      TitleDropDown('Select Year:',
-                          ['21-batch', '22-batch', '23-batch', '24-batch']),
+                      TitleDropDown('Select Year'),
                       SizedBox(
                         height: 20,
                       ),
-                      TitleDropDown('Select Division:', ['1', '2']),
+                      TitleDropDown('Select Division'),
                       SizedBox(
                         height: 20,
                       ),
-                      TitleDropDown('Select Batch:',
-                          ['A1', 'B1', 'C1', 'D1', 'A2', 'B2', 'C2', 'D2']),
+                      TitleDropDown('Select Batch'),
                       SizedBox(
                         height: 20,
                       ),
-                      TitleDropDown('Select Location:',
-                          ['631', '632', '633', '634', '638']),
+                      TitleDropDown('Select Location'),
                       SizedBox(
                         height: 20,
                       ),
-                      TitleDropDown('Select Subject:', ['Through text field']),
+                      TitleDropDown('Select Subject'),
                       SizedBox(
                         height: 50,
                       ),

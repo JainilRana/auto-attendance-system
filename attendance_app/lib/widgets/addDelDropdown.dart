@@ -1,12 +1,11 @@
+import 'package:attendance_app/main.dart';
+import 'package:attendance_app/screens/addData.dart';
 import 'package:attendance_app/widgets/titleDropDown.dart';
 import 'package:flutter/material.dart';
 
 class AddDelDD extends StatefulWidget {
   String title;
-  List<String> li;
-
-  AddDelDD(this.title, this.li);
-
+  AddDelDD(this.title);
   @override
   State<AddDelDD> createState() => _AddDelDDState();
 }
@@ -30,7 +29,7 @@ class _AddDelDDState extends State<AddDelDD> {
           icon: Icon(Icons.remove_circle_outline_rounded),
         ),
         SizedBox(width: 10),
-        TitleDropDown(widget.title, widget.li),
+        TitleDropDown(widget.title),
         SizedBox(width: 10),
         IconButton.filled(
           onPressed: () {
@@ -78,7 +77,43 @@ class _AddDelDDState extends State<AddDelDD> {
           ),
           actions: [
             TextButton(
-              onPressed: () {},
+              onPressed: () async {
+                if (operation == 'Add') {
+                  setState(() {
+                    title == 'Department'
+                        ? deptS.add(inputController.text)
+                        : title == 'Year'
+                            ? yearS.add(inputController.text)
+                            : title == 'Division'
+                                ? divS.add(inputController.text)
+                                : title == 'Batch'
+                                    ? batcheS.add(inputController.text)
+                                : title == 'Location'
+                                    ? locS.add(inputController.text)
+                                    : null;
+                    db.collection("dropdowns").doc(title).set({
+                      'li': title == 'Department'
+                          ? deptS.toList()
+                          : title == 'Year'
+                              ? yearS.toList()
+                              : title == 'Division'
+                                  ? divS.toList()
+                                  : title == 'Batch'
+                                      ? batcheS.toList()
+                                  : title == 'Location'
+                                      ? locS.toList()
+                                      : [],
+                    });
+                  });
+                } else {
+                  setState(() {
+                    // Remaining
+                  });
+                }
+                inputController.clear();
+                Navigator.of(context).pop();
+                await fetchDropdowns();
+              },
               child: Text(operation),
             ),
             TextButton(
