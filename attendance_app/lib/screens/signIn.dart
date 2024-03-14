@@ -2,6 +2,7 @@ import 'package:attendance_app/main.dart';
 import 'package:attendance_app/screens/homePageA.dart';
 import 'package:attendance_app/screens/homePageF.dart';
 import 'package:attendance_app/screens/signUp.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -112,11 +113,18 @@ class SignIn extends StatelessWidget {
                             );
                           });
                         } on FirebaseAuthException catch (e) {
-                          if (e.code == 'user-not-found') {
-                            print('No user found for that email.');
-                          } else if (e.code == 'wrong-password') {
-                            print('Wrong password provided for that user.');
-                          }
+                          Fluttertoast.showToast(
+                            msg: e.message.toString(),
+                            backgroundColor: Colors.red,
+                            fontSize: 20,
+                            textColor: Colors.white,
+                            gravity: ToastGravity.BOTTOM,
+                            webBgColor:
+                                "	linear-gradient(to right, #F44336, #F44336)",
+                            timeInSecForIosWeb: 2,
+                            webPosition: "center",
+                            webShowClose: true,
+                          );
                         }
                       },
                       child: Text('Sign In'),

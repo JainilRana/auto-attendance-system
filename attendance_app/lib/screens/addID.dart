@@ -2,6 +2,7 @@ import 'package:attendance_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:excel/excel.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AddID extends StatefulWidget {
   var idKey;
@@ -71,8 +72,29 @@ class _AddIDState extends State<AddID> {
                           .set({}).then((value) => print("IDs Added"));
                     }
                   }
+                  Fluttertoast.showToast(
+                    msg: "Data added successfully!!",
+                    backgroundColor: Colors.green,
+                    fontSize: 20,
+                    textColor: Colors.white,
+                    gravity: ToastGravity.BOTTOM,
+                    webBgColor: "	linear-gradient(to right, #4CAF50, #4CAF50)",
+                    timeInSecForIosWeb: 2,
+                    webPosition: "center",
+                    webShowClose: true,
+                  );
                 } else {
-                  print('No file selected');
+                  Fluttertoast.showToast(
+                    msg: "No file selected!!",
+                    backgroundColor: Colors.red,
+                    fontSize: 20,
+                    textColor: Colors.white,
+                    gravity: ToastGravity.BOTTOM,
+                    webBgColor: "	linear-gradient(to right, #F44336, #F44336)",
+                    timeInSecForIosWeb: 2,
+                    webPosition: "center",
+                    webShowClose: true,
+                  );
                 }
               },
               style: TextButton.styleFrom(

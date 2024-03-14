@@ -1,5 +1,7 @@
 import 'package:attendance_app/screens/addData.dart';
 import 'package:attendance_app/screens/addID.dart';
+import 'package:attendance_app/screens/signIn.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomePageA extends StatefulWidget {
@@ -17,6 +19,28 @@ class _HomePageAState extends State<HomePageA> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Admin Panel'),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              try {
+                await FirebaseAuth.instance.signOut().then((value) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SignIn(),
+                    ),
+                  );
+                });
+              } catch (e) {
+                print(e);
+              }
+            },
+            icon: Icon(
+              Icons.logout_rounded,
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
       body: Center(
         child: Padding(

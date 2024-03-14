@@ -3,6 +3,7 @@ import 'package:attendance_app/screens/homePageA.dart';
 import 'package:attendance_app/screens/homePageF.dart';
 import 'package:attendance_app/screens/signIn.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -146,11 +147,18 @@ class SignUp extends StatelessWidget {
                             }
                           });
                         } on FirebaseAuthException catch (e) {
-                          if (e.code == 'weak-password') {
-                            print('The password provided is too weak.');
-                          } else if (e.code == 'email-already-in-use') {
-                            print('The account already exists for that email.');
-                          }
+                          Fluttertoast.showToast(
+                            msg: e.message.toString(),
+                            backgroundColor: Colors.red,
+                            fontSize: 20,
+                            textColor: Colors.white,
+                            gravity: ToastGravity.BOTTOM,
+                            webBgColor:
+                                "	linear-gradient(to right, #F44336, #F44336)",
+                            timeInSecForIosWeb: 2,
+                            webPosition: "center",
+                            webShowClose: true,
+                          );
                         } catch (e) {
                           print(e);
                         }
