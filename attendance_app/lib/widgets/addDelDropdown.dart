@@ -88,9 +88,9 @@ class _AddDelDDState extends State<AddDelDD> {
                                 ? divS.add(inputController.text)
                                 : title == 'Batch'
                                     ? batcheS.add(inputController.text)
-                                : title == 'Location'
-                                    ? locS.add(inputController.text)
-                                    : null;
+                                    : title == 'Location'
+                                        ? locS.add(inputController.text)
+                                        : null;
                     db.collection("dropdowns").doc(title).set({
                       'li': title == 'Department'
                           ? deptS.toList()
@@ -100,14 +100,37 @@ class _AddDelDDState extends State<AddDelDD> {
                                   ? divS.toList()
                                   : title == 'Batch'
                                       ? batcheS.toList()
-                                  : title == 'Location'
-                                      ? locS.toList()
-                                      : [],
+                                      : title == 'Location'
+                                          ? locS.toList()
+                                          : [],
                     });
                   });
                 } else {
                   setState(() {
-                    // Remaining
+                    title == 'Department'
+                        ? deptS.remove(inputController.text)
+                        : title == 'Year'
+                            ? yearS.remove(inputController.text)
+                            : title == 'Division'
+                                ? divS.remove(inputController.text)
+                                : title == 'Batch'
+                                    ? batcheS.remove(inputController.text)
+                                    : title == 'Location'
+                                        ? locS.remove(inputController.text)
+                                        : null;
+                    db.collection("dropdowns").doc(title).set({
+                      'li': title == 'Department'
+                          ? deptS.toList()
+                          : title == 'Year'
+                              ? yearS.toList()
+                              : title == 'Division'
+                                  ? divS.toList()
+                                  : title == 'Batch'
+                                      ? batcheS.toList()
+                                      : title == 'Location'
+                                          ? locS.toList()
+                                          : [],
+                    });
                   });
                 }
                 inputController.clear();

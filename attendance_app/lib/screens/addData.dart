@@ -3,6 +3,7 @@ import 'package:attendance_app/widgets/addDelDropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:excel/excel.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 Set<String> deptS = {},
     yearS = {},
@@ -27,23 +28,14 @@ fetchDropdowns() async {
   await db.collection('dropdowns').doc('Location').get().then((value) {
     locS = value.data() != null ? Set<String>.from(value.data()!['li']) : {};
   });
-  print('fetchdropdowns $deptS, $yearS, $divS, $batcheS $locS');
 }
 
 class AddData extends StatefulWidget {
-  var dataKey;
-  AddData({this.dataKey});
   @override
   State<AddData> createState() => _AddDataState();
 }
 
 class _AddDataState extends State<AddData> {
-  @override
-  void initState() {
-    super.initState();
-    fetchDropdowns();
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -115,6 +107,24 @@ class _AddDataState extends State<AddData> {
                                 )[i]![0]
                                 .toString()
                           });
+                          db
+                              .collection('student_id')
+                              .doc(
+                                excel.tables[table]!
+                                        .selectRangeValues(
+                                          CellIndex.indexByColumnRow(
+                                              columnIndex: 0, rowIndex: 1),
+                                          end: CellIndex.indexByColumnRow(
+                                            columnIndex: 0,
+                                            rowIndex: excel.tables[table]!.rows
+                                                    .length -
+                                                1,
+                                          ),
+                                        )[i]![0]
+                                        .toString() +
+                                    '@charusat.edu.in',
+                              )
+                              .set({});
                         }
                         db.collection('student_data').doc(dept).get().then(
                           (value) {
@@ -122,7 +132,6 @@ class _AddDataState extends State<AddData> {
                               var studentData = value.data()!.map((key, value) {
                                 return MapEntry(key, value);
                               });
-                              print(studentData.toString());
                               if (studentData.containsKey(year)) {
                                 if (studentData[year].containsKey(div)) {
                                   if (studentData[year][div]
@@ -150,12 +159,10 @@ class _AddDataState extends State<AddData> {
                                   },
                                 });
                               }
-                              print(studentData.toString());
                               db.collection('student_data').doc(dept).set(
                                     studentData,
                                   );
                             } else {
-                              print('here $dept, $year, $div, $batch, $data');
                               db.collection('student_data').doc(dept).set(
                                 {
                                   year!: {
@@ -169,8 +176,31 @@ class _AddDataState extends State<AddData> {
                           },
                         );
                       }
+                      Fluttertoast.showToast(
+                        msg: "Data added successfully!!",
+                        backgroundColor: Colors.green,
+                        fontSize: 20,
+                        textColor: Colors.white,
+                        gravity: ToastGravity.BOTTOM,
+                        webBgColor:
+                            "	linear-gradient(to right, #4CAF50, #4CAF50)",
+                        timeInSecForIosWeb: 2,
+                        webPosition: "center",
+                        webShowClose: true,
+                      );
                     } else {
-                      print('No file selected');
+                      Fluttertoast.showToast(
+                        msg: "No file selected!!",
+                        backgroundColor: Colors.red,
+                        fontSize: 20,
+                        textColor: Colors.white,
+                        gravity: ToastGravity.BOTTOM,
+                        webBgColor:
+                            "	linear-gradient(to right, #F44336, #F44336)",
+                        timeInSecForIosWeb: 2,
+                        webPosition: "center",
+                        webShowClose: true,
+                      );
                     }
                   },
                   style: TextButton.styleFrom(
@@ -185,7 +215,7 @@ class _AddDataState extends State<AddData> {
                   label: Text('Upload Excel File'),
                 ),
                 Text(
-                  "**Upload Excel(.xlsx) file with only two columns,\ncontaining all IDs & Names of students with 'ID' & 'Name' as title**",
+                  "**Upload Excel(.xlsx) file with only two columns, containing all IDs & Names of students (of the selected batch only) with 'ID' & 'Name' as title **",
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w300,

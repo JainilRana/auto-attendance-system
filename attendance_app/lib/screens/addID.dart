@@ -5,8 +5,6 @@ import 'package:excel/excel.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class AddID extends StatefulWidget {
-  var idKey;
-  AddID({this.idKey});
   @override
   State<AddID> createState() => _AddIDState();
 }
@@ -19,7 +17,7 @@ class _AddIDState extends State<AddID> {
       mainAxisSize: MainAxisSize.max,
       children: [
         Text(
-          widget.idKey == "faculty_id" ? "Add Faculty ID" : "Add Student ID",
+          "Add Faculty ID",
           style: TextStyle(
             fontSize: 30,
             fontWeight: FontWeight.bold,
@@ -55,9 +53,7 @@ class _AddIDState extends State<AddID> {
                             rowIndex: excel.tables[table]!.rows.length - 1),
                       )[i]![0]}');
                       db
-                          .collection(widget.idKey == "faculty_id"
-                              ? "faculty_id"
-                              : "student_id")
+                          .collection('faculty_id')
                           .doc(
                             (excel.tables[table]!.selectRangeValues(
                               CellIndex.indexByColumnRow(
@@ -110,7 +106,7 @@ class _AddIDState extends State<AddID> {
           ),
         ),
         Text(
-          "**Upload Excel(.xlsx) file with only one column containing all ID's & ${widget.idKey} as title**",
+          "**Upload Excel(.xlsx) file with only one column containing all ID's & '${'faculty_id'}' as title**",
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w300,

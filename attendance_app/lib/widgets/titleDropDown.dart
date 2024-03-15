@@ -85,7 +85,6 @@ class _TitleDropDownState extends State<TitleDropDown> {
                                   ? locS
                                   : widget.li)
               .map<DropdownMenuItem<String>>((String value) {
-            print('Value: ' + value);
             return DropdownMenuItem<String>(
               value: value,
               child: Text(value),
