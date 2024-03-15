@@ -91,6 +91,25 @@ class SignIn extends StatelessWidget {
                   Expanded(
                     child: TextButton(
                       onPressed: () async {
+                        mailType = await checkIdType(
+                          siEmailController.text.toString(),
+                        );
+                        if (mailType == 'None' &&
+                            siEmailController.text != adminId) {
+                          Fluttertoast.showToast(
+                            msg: 'Please use institute email id.',
+                            backgroundColor: Colors.red,
+                            fontSize: 20,
+                            textColor: Colors.white,
+                            gravity: ToastGravity.BOTTOM,
+                            webBgColor:
+                                "	linear-gradient(to right, #F44336, #F44336)",
+                            timeInSecForIosWeb: 2,
+                            webPosition: "center",
+                            webShowClose: true,
+                          );
+                          return;
+                        }
                         try {
                           final credential = await FirebaseAuth.instance
                               .signInWithEmailAndPassword(
@@ -100,16 +119,18 @@ class SignIn extends StatelessWidget {
                               .then((value) {
                             Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  if (getCurrentUser().email ==
-                                      'admin@charusat.edu.in') {
-                                    return HomePageA();
-                                  } else {
-                                    return HomePageF();
-                                  }
-                                },
-                              ),
+                              MaterialPageRoute(builder: (context) {
+                                if (getCurrentUser().email == adminId) {
+                                  return HomePageA();
+                                } else if (mailType == 'faculty') {
+                                  return HomePageF();
+                                } else {
+                                  return HomePageF();
+                                }
+                                // else {
+                                //   student homepage return
+                                // }
+                              }),
                             );
                           });
                         } on FirebaseAuthException catch (e) {

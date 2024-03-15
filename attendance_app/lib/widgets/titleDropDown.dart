@@ -1,20 +1,20 @@
 import 'package:attendance_app/screens/addData.dart';
+import 'package:attendance_app/screens/homePageF.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TitleDropDown extends StatefulWidget {
   String title;
-  List<String> li = ['Null'];
+  List<String> li;
   TitleDropDown(
-    this.title,
-  );
+    this.title, {
+    this.li = const ['Null'],
+  });
   @override
   _TitleDropDownState createState() => _TitleDropDownState();
 }
 
 class _TitleDropDownState extends State<TitleDropDown> {
-  String? currentSelected;
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -42,7 +42,20 @@ class _TitleDropDownState extends State<TitleDropDown> {
                           ? batch
                           : widget.title.split(' ').last == 'Location'
                               ? loc
-                              : currentSelected,
+                              : widget.title.split(' ').last == 'Department:'
+                                  ? deptF
+                                  : widget.title.split(' ').last == 'Year:'
+                                      ? yearF
+                                      : widget.title.split(' ').last ==
+                                              'Division:'
+                                          ? divF
+                                          : widget.title.split(' ').last ==
+                                                  'Batch:'
+                                              ? batchF
+                                              : widget.title.split(' ').last ==
+                                                      'Location:'
+                                                  ? locF
+                                                  : null,
           icon: Icon(Icons.arrow_drop_down_rounded),
           iconSize: 30,
           style: TextStyle(
@@ -61,7 +74,23 @@ class _TitleDropDownState extends State<TitleDropDown> {
                               ? batch = newValue
                               : widget.title.split(' ').last == 'Location'
                                   ? loc = newValue
-                                  : currentSelected = newValue;
+                                  : widget.title.split(' ').last ==
+                                          'Department:'
+                                      ? deptF = newValue
+                                      : widget.title.split(' ').last == 'Year:'
+                                          ? yearF = newValue
+                                          : widget.title.split(' ').last ==
+                                                  'Division:'
+                                              ? divF = newValue
+                                              : widget.title.split(' ').last ==
+                                                      'Batch:'
+                                                  ? batchF = newValue
+                                                  : widget.title
+                                                              .split(' ')
+                                                              .last ==
+                                                          'Location:'
+                                                      ? locF = newValue
+                                                      : null;
             });
           },
           focusColor: Colors.transparent,

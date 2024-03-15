@@ -7,6 +7,30 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+String mailType = 'None';
+checkIdType(String mailId) async {
+  mailType = 'None';
+  if (mailType == 'None') {
+    await db.collection('faculty_id').get().then((value) {
+      value.docs.forEach((element) {
+        if (element.id.toLowerCase() == mailId.toLowerCase()) {
+          mailType = 'faculty';
+        }
+      });
+    });
+  }
+  if (mailType == 'None') {
+    await db.collection('student_id').get().then((value) {
+      value.docs.forEach((element) {
+        if (element.id.toLowerCase() == mailId.toLowerCase()) {
+          mailType = 'student';
+        }
+      });
+    });
+  }
+  return mailType;
+}
+
 class SignUp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -142,24 +166,12 @@ class SignUp extends StatelessWidget {
                           return;
                         }
                         if (flag == false) {
-                          await db.collection('faculty_id').get().then((value) {
-                            value.docs.forEach((element) {
-                              if (element.id.toLowerCase() ==
-                                  suEmailController.text.toLowerCase()) {
-                                flag = true;
-                              }
-                            });
-                          });
-                        }
-                        if (flag == false) {
-                          await db.collection('student_id').get().then((value) {
-                            value.docs.forEach((element) {
-                              if (element.id.toLowerCase() ==
-                                  suEmailController.text.toLowerCase()) {
-                                flag = true;
-                              }
-                            });
-                          });
+                          mailType = await checkIdType(
+                              suEmailController.text.toString());
+                          print(mailType);
+                          if (mailType == 'faculty' || mailType == 'student') {
+                            flag = true;
+                          }
                         }
                         if (flag == false) {
                           Fluttertoast.showToast(
@@ -192,11 +204,17 @@ class SignUp extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(builder: (context) {
                                     if (getCurrentUser().email ==
-                                        'admin@charusat.edu.in') {
+                                        adminId) {
                                       return HomePageA();
-                                    } else {
+                                    } else if (mailType == 'faculty') {
                                       return HomePageF();
                                     }
+                                    else {
+                                      return HomePageF();
+                                    }
+                                    // else {
+                                    //   student homepage return
+                                    // }
                                   }),
                                 );
                               });

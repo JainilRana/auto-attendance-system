@@ -69,23 +69,6 @@ class _HomePageAState extends State<HomePageA> {
                     ),
                     label: Text('Add Faculty ID'),
                   ),
-                  // TextButton.icon(
-                  //   onPressed: () {
-                  //     setState(() {
-                  //       subPage = 'student_id';
-                  //     });
-                  //   },
-                  //   icon: Icon(Icons.add_circle_outline_rounded),
-                  //   style: TextButton.styleFrom(
-                  //     padding: EdgeInsets.all(20),
-                  //     foregroundColor: Colors.white,
-                  //     backgroundColor: Colors.blue,
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(15),
-                  //     ),
-                  //   ),
-                  //   label: Text('Add Student ID'),
-                  // ),
                   TextButton.icon(
                     onPressed: () {
                       setState(() {
