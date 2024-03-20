@@ -9,7 +9,7 @@ Set<String> deptS = {},
     yearS = {},
     divS = {},
     batcheS = {},
-    locS = {}; // List of no. & names in that batch in excel format
+    locS = {};
 String? dept, year, div, batch, loc;
 
 fetchDropdowns() async {

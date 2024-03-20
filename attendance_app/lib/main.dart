@@ -22,22 +22,21 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseAuth.instance.authStateChanges().listen((User? user) {
-    // check ID type
     if (user != null && user.email == adminId) {
       startScreen = HomePageA();
-    } else if (mailType == 'faculty') {
-      startScreen = HomePageF();
-    } // else if (mailType == 'student') { return student homepage }
-    else {
+    } else {
       startScreen = SignIn();
     }
   });
-  runApp(const MainApp());
+  mailType =
+      await checkIdType(getCurrentUser() != null ? getCurrentUser().email : '');
+  if (mailType == 'faculty') {
+    startScreen = HomePageF();
+  } // else if (mailType == 'student') { return student homepage }
+  runApp(MainApp());
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
