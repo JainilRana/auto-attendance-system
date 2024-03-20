@@ -1,11 +1,27 @@
 import 'package:attendance_app/main.dart';
+import 'package:attendance_app/screens/editSubjects.dart';
 import 'package:attendance_app/screens/signIn.dart';
-import 'package:attendance_app/widgets/titleDropDown.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-String? deptF, yearF, divF, batchF, locF;
+var studentData = {};
+var locations = [];
+
+fetchStudentData() async {
+  var data = await db.collection('student_data').get().whenComplete(
+        () => print('Data Fetched'),
+      );
+  data.docs.forEach((element) {
+    studentData.addAll(
+      {element.id: element.data()},
+    );
+  });
+  var loc = await db.collection('dropdowns').doc('Location').get().whenComplete(
+        () => print('Locations Fetched'),
+      );
+  locations = loc.data()!['li'];
+}
 
 class HomePageF extends StatefulWidget {
   @override
@@ -14,7 +30,7 @@ class HomePageF extends StatefulWidget {
 
 class _HomePageFState extends State<HomePageF> {
   var user;
-  var studentData = {};
+  String? deptF, yearF, divF, batchF, locF;
 
   @override
   void initState() {
@@ -22,15 +38,84 @@ class _HomePageFState extends State<HomePageF> {
     super.initState();
   }
 
-  fetchStudentData() async {
-    var data = await db.collection('student_data').get().whenComplete(
-          () => print('Data Fetched'),
-        );
-    data.docs.forEach((element) {
-      studentData.addAll(
-        {element.id: element.data()},
-      );
-    });
+  TitleDDF(String title, List<String> li) {
+    return Row(
+      children: [
+        Text(
+          title,
+          style: GoogleFonts.rubik(
+            textStyle: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 20,
+        ),
+        DropdownButton<String>(
+          value: title.split(' ').last == 'Department:'
+              ? deptF
+              : title.split(' ').last == 'Year:'
+                  ? yearF
+                  : title.split(' ').last == 'Division:'
+                      ? divF
+                      : title.split(' ').last == 'Batch:'
+                          ? batchF
+                          : title.split(' ').last == 'Location:'
+                              ? locF
+                              : null,
+          icon: Icon(Icons.arrow_drop_down_rounded),
+          iconSize: 30,
+          style: TextStyle(
+            color: Colors.blueAccent[700],
+            fontSize: 16,
+          ),
+          onChanged: (String? newValue) {
+            setState(() {
+              title.split(' ').last == 'Department:'
+                  ? () {
+                      deptF = newValue;
+                      yearF = null;
+                      divF = null;
+                      batchF = null;
+                    }()
+                  : title.split(' ').last == 'Year:'
+                      ? () {
+                          yearF = newValue;
+                          divF = null;
+                          batchF = null;
+                        }()
+                      : title.split(' ').last == 'Division:'
+                          ? () {
+                              divF = newValue;
+                              batchF = null;
+                            }()
+                          : title.split(' ').last == 'Batch:'
+                              ? batchF = newValue
+                              : title.split(' ').last == 'Location:'
+                                  ? locF = newValue
+                                  : null;
+            });
+          },
+          focusColor: Colors.transparent,
+          underline: Container(
+            height: 1.5,
+            color: Colors.grey[800],
+          ),
+          hint: Text('--Select--'),
+          borderRadius: BorderRadius.circular(20),
+          elevation: 1,
+          menuMaxHeight: 200,
+          items: (li).map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        ),
+      ],
+    );
   }
 
   @override
@@ -129,75 +214,119 @@ class _HomePageFState extends State<HomePageF> {
                     )
                   ],
                 ),
-                FutureBuilder(
-                  future: fetchStudentData(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Expanded(
-                        child: Center(
-                          child: CircularProgressIndicator(),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TitleDDF(
+                        'Select Department:',
+                        List<String>.from(
+                          studentData.keys.toList(),
                         ),
-                      );
-                    } else {
-                      return Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            TitleDropDown('Select Department:'),
-                            SizedBox(
-                              height: 20,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TitleDDF(
+                        'Select Year:',
+                        deptF != null && studentData[deptF] != null
+                            ? studentData[deptF].keys.toList()
+                            : [],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TitleDDF(
+                        'Select Division:',
+                        deptF != null &&
+                                yearF != null &&
+                                studentData[deptF] != null &&
+                                studentData[deptF][yearF] != null
+                            ? studentData[deptF][yearF].keys.toList()
+                            : [],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TitleDDF(
+                        'Select Batch:',
+                        (deptF != null &&
+                                yearF != null &&
+                                divF != null &&
+                                studentData[deptF] != null &&
+                                studentData[deptF][yearF] != null &&
+                                studentData[deptF][yearF][divF] != null)
+                            ? studentData[deptF][yearF][divF].keys.toList()
+                            : [],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TitleDDF(
+                        'Select Location:',
+                        List<String>.from(locations.toList()),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TitleDDF('Select Subject:', ['Null']),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: ElevatedButton.icon(
+                          label: Text('Edit Subjects'),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditSubjects(),
+                              ),
+                            );
+                          },
+                          icon: Icon(Icons.edit_rounded),
+                          style: IconButton.styleFrom(
+                            padding: EdgeInsets.all(10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            TitleDropDown('Select Year:'),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            TitleDropDown('Select Division:'),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            TitleDropDown('Select Batch:'),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            TitleDropDown('Select Location:'),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            TitleDropDown('Select Subject:'),
-                            SizedBox(
-                              height: 50,
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: TextButton(
-                                    onPressed: () {},
-                                    style: TextButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      padding: EdgeInsets.all(15),
-                                      backgroundColor: Colors.black,
-                                      foregroundColor: Colors.white,
-                                    ),
-                                    child: Text(
-                                      'Start Attendance',
-                                      style: GoogleFonts.rubik(
-                                        textStyle: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w300,
-                                        ),
-                                      ),
-                                    ),
+                            backgroundColor: Colors.grey[300],
+                            foregroundColor: Colors.black,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 50,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextButton(
+                              onPressed: () {},
+                              style: TextButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding: EdgeInsets.all(15),
+                                backgroundColor: Colors.black,
+                                foregroundColor: Colors.white,
+                              ),
+                              child: Text(
+                                'Start Attendance',
+                                style: GoogleFonts.rubik(
+                                  textStyle: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w300,
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
-                          ],
-                        ),
-                      );
-                    }
-                  },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

@@ -42,20 +42,7 @@ class _TitleDropDownState extends State<TitleDropDown> {
                           ? batch
                           : widget.title.split(' ').last == 'Location'
                               ? loc
-                              : widget.title.split(' ').last == 'Department:'
-                                  ? deptF
-                                  : widget.title.split(' ').last == 'Year:'
-                                      ? yearF
-                                      : widget.title.split(' ').last ==
-                                              'Division:'
-                                          ? divF
-                                          : widget.title.split(' ').last ==
-                                                  'Batch:'
-                                              ? batchF
-                                              : widget.title.split(' ').last ==
-                                                      'Location:'
-                                                  ? locF
-                                                  : null,
+                              : null,
           icon: Icon(Icons.arrow_drop_down_rounded),
           iconSize: 30,
           style: TextStyle(
@@ -74,23 +61,7 @@ class _TitleDropDownState extends State<TitleDropDown> {
                               ? batch = newValue
                               : widget.title.split(' ').last == 'Location'
                                   ? loc = newValue
-                                  : widget.title.split(' ').last ==
-                                          'Department:'
-                                      ? deptF = newValue
-                                      : widget.title.split(' ').last == 'Year:'
-                                          ? yearF = newValue
-                                          : widget.title.split(' ').last ==
-                                                  'Division:'
-                                              ? divF = newValue
-                                              : widget.title.split(' ').last ==
-                                                      'Batch:'
-                                                  ? batchF = newValue
-                                                  : widget.title
-                                                              .split(' ')
-                                                              .last ==
-                                                          'Location:'
-                                                      ? locF = newValue
-                                                      : null;
+                                  : null;
             });
           },
           focusColor: Colors.transparent,
