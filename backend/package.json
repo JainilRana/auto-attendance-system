@@ -1,0 +1,20 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "attendance system backend",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
+  },
+  "author": "Nirav",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.1",
+    "firebase": "^10.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
