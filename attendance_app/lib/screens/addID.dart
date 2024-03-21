@@ -63,7 +63,7 @@ class _AddIDState extends State<AddID> {
                                   rowIndex:
                                       excel.tables[table]!.rows.length - 1),
                             )[i]![0])
-                                .toString(),
+                                .toString().toLowerCase(),
                           )
                           .set({}).then((value) => print("IDs Added"));
                     }

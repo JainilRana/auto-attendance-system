@@ -203,13 +203,11 @@ class SignUp extends StatelessWidget {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(builder: (context) {
-                                    if (getCurrentUser().email ==
-                                        adminId) {
+                                    if (getCurrentUser().email == adminId) {
                                       return HomePageA();
                                     } else if (mailType == 'faculty') {
                                       return HomePageF();
-                                    }
-                                    else {
+                                    } else {
                                       return HomePageF();
                                     }
                                     // else {
@@ -218,6 +216,16 @@ class SignUp extends StatelessWidget {
                                   }),
                                 );
                               });
+                              if (mailType == 'faculty') {
+                                db
+                                    .collection('faculty_id')
+                                    .doc(suEmailController.text
+                                        .toString()
+                                        .toLowerCase())
+                                    .set({
+                                  'uid': getCurrentUser().uid,
+                                });
+                              }
                               print(suNameController.text.toString());
                             }
                           });

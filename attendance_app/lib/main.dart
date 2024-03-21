@@ -31,6 +31,7 @@ Future<void> main() async {
   mailType =
       await checkIdType(getCurrentUser() != null ? getCurrentUser().email : '');
   if (mailType == 'faculty') {
+    print('Faculty Screen Loaded');
     await fetchStudentData();
     startScreen = HomePageF();
   } // else if (mailType == 'student') { return student homepage }

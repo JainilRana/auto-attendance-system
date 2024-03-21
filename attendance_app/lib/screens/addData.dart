@@ -122,7 +122,7 @@ class _AddDataState extends State<AddData> {
                                                   1,
                                             ),
                                           )[i]![0]
-                                          .toString() +
+                                          .toString().toLowerCase() +
                                       '@charusat.edu.in',
                                 )
                                 .set({});
