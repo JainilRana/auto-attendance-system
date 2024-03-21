@@ -8,22 +8,42 @@ class EditSubjects extends StatefulWidget {
 }
 
 class _EditSubjectsState extends State<EditSubjects> {
+  // SharedPreferences? prefs;
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  SharedPreferences? prefs;
-  List<String> subjectList = [];
+  late Future<List<String>> subjectListFuture;
   TextEditingController inputController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    subjectListFuture = _prefs.then((SharedPreferences prefs) {
+      return prefs.getStringList('subjects') ?? [];
+    });
   }
 
-  // fetchList() async {
-  //   prefs = await _prefs;
-  //   subjectList =
-  //       (prefs != null ? prefs!.getStringList('subjects') : ['Null']) ??
-  //           ['Null2'];
+  // getSubList() async {
+  //   final SharedPreferences prefs = await _prefs;
+  //   final List<dynamic> subList = ((prefs.getStringList('subjects') ?? []));
+
+  //   setState(() {
+  //     _counter = prefs.setInt('counter', counter).then((bool success) {
+  //       return counter;
+  //     });
+  //   });
   // }
+
+  updateSubList(String newSub) async {
+    final SharedPreferences prefs = await _prefs;
+    var subList = ((prefs.getStringList('subjects') ?? []));
+    subList.add(newSub);
+
+    setState(() {
+      subjectListFuture =
+          prefs.setStringList('subjects', subList).then((bool success) {
+        return subList;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,9 +119,7 @@ class _EditSubjectsState extends State<EditSubjects> {
                               actions: [
                                 TextButton(
                                   onPressed: () async {
-                                    subjectList.add(inputController.text);
-                                    // prefs!
-                                    //     .setStringList('subjects', subjectList);
+                                    updateSubList(inputController.text);
                                     inputController.clear();
                                     Navigator.of(context).pop();
                                     setState(() {});
@@ -147,42 +165,103 @@ class _EditSubjectsState extends State<EditSubjects> {
                     ),
                   ],
                 ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          'Update',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.blueAccent,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Image.asset(
+                          'assets/RightUpdate.gif',
+                          height: 35,
+                          width: 35,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/LeftDelete.gif',
+                          height: 35,
+                          width: 35,
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Text(
+                          'Delete',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.redAccent,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
                 Expanded(
                   child: FutureBuilder(
-                    future: Future.delayed(Duration(seconds: 1)), // fetchList(),
+                    future: subjectListFuture,
                     builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(vertical: 20),
-                          child: ListView.builder(
-                            padding: EdgeInsets.symmetric(horizontal: 5),
-                            itemCount: subjectList.length,
-                            itemBuilder: (context, index) {
-                              return Card(
-                                elevation: 5,
-                                margin: EdgeInsets.symmetric(vertical: 10),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: ListTile(
-                                  title: Text(
-                                    subjectList[index],
-                                    style: GoogleFonts.rubik(
-                                      textStyle: TextStyle(
-                                        fontSize: 20,
-                                      ),
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+                        case ConnectionState.waiting:
+                          return const CircularProgressIndicator();
+                        case ConnectionState.active:
+                        case ConnectionState.done:
+                          if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(vertical: 20),
+                              child: ListView.builder(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (context, index) {
+                                  return Card(
+                                    elevation: 5,
+                                    margin: EdgeInsets.symmetric(vertical: 10),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
                                     ),
-                                  ),
-                                  contentPadding: EdgeInsets.all(15),
-                                ),
-                              );
-                            },
-                          ),
-                        );
+                                    child: ListTile(
+                                      title: Text(
+                                        snapshot.data![index],
+                                        style: GoogleFonts.rubik(
+                                          textStyle: TextStyle(
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                      ),
+                                      contentPadding: EdgeInsets.all(15),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          }
                       }
                     },
                   ),
