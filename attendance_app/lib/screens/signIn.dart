@@ -116,20 +116,23 @@ class SignIn extends StatelessWidget {
                             email: siEmailController.text.toString(),
                             password: siPaswdController.text.toString(),
                           )
-                              .then((value) {
+                              .then((value) async {
+                            var returnScreen;
+                            if (getCurrentUser().email == adminId) {
+                              returnScreen = HomePageA();
+                            } else if (mailType == 'faculty') {
+                              await fetchStudentData();
+                              returnScreen = HomePageF();
+                            } else {
+                              returnScreen = HomePageF();
+                            }
+                            // else {
+                            //   student homepage return
+                            // }
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(builder: (context) {
-                                if (getCurrentUser().email == adminId) {
-                                  return HomePageA();
-                                } else if (mailType == 'faculty') {
-                                  return HomePageF();
-                                } else {
-                                  return HomePageF();
-                                }
-                                // else {
-                                //   student homepage return
-                                // }
+                                return returnScreen;
                               }),
                             );
                           });

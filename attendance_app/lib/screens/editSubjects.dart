@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,6 +13,8 @@ class _EditSubjectsState extends State<EditSubjects> {
   // SharedPreferences? prefs;
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late Future<List<String>> subjectListFuture;
+  double contHeight = 30;
+  double contWidth = double.maxFinite;
   TextEditingController inputController = TextEditingController();
 
   @override
@@ -18,6 +22,12 @@ class _EditSubjectsState extends State<EditSubjects> {
     super.initState();
     subjectListFuture = _prefs.then((SharedPreferences prefs) {
       return prefs.getStringList('subjects') ?? [];
+    });
+    Timer(Duration(seconds: 5), () {
+      setState(() {
+        contHeight = 0;
+        contWidth = 0;
+      });
     });
   }
 
@@ -168,58 +178,63 @@ class _EditSubjectsState extends State<EditSubjects> {
                 SizedBox(
                   height: 20,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text(
-                          'Update',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.blueAccent,
+                AnimatedContainer(
+                  duration: Duration(seconds: 1),
+                  height: contHeight,
+                  width: contWidth,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            width: 20,
                           ),
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Image.asset(
-                          'assets/RightUpdate.gif',
-                          height: 35,
-                          width: 35,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset(
-                          'assets/LeftDelete.gif',
-                          height: 35,
-                          width: 35,
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Text(
-                          'Delete',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.redAccent,
+                          Text(
+                            'Update',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.blueAccent,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                      ],
-                    ),
-                  ],
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Image.asset(
+                            'assets/RightUpdate.gif',
+                            height: 35,
+                            width: 35,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset(
+                            'assets/LeftDelete.gif',
+                            height: 35,
+                            width: 35,
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Text(
+                            'Delete',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.redAccent,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 Expanded(
                   child: FutureBuilder(
@@ -235,14 +250,16 @@ class _EditSubjectsState extends State<EditSubjects> {
                             return Text('Error: ${snapshot.error}');
                           } else {
                             return Padding(
-                              padding: EdgeInsets.symmetric(vertical: 20),
+                              padding: EdgeInsets.symmetric(vertical: 0),
                               child: ListView.builder(
                                 padding: EdgeInsets.symmetric(horizontal: 5),
                                 itemCount: snapshot.data!.length,
                                 itemBuilder: (context, index) {
                                   return Card(
-                                    elevation: 5,
-                                    margin: EdgeInsets.symmetric(vertical: 10),
+                                    elevation: 0,
+                                    borderOnForeground: false,
+                                    color: Colors.grey[300],
+                                    margin: EdgeInsets.symmetric(vertical: 8),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),
                                     ),
@@ -255,7 +272,11 @@ class _EditSubjectsState extends State<EditSubjects> {
                                           ),
                                         ),
                                       ),
-                                      contentPadding: EdgeInsets.all(15),
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 15,
+                                        vertical: 5,
+                                      ),
+                                      dense: true,
                                     ),
                                   );
                                 },
