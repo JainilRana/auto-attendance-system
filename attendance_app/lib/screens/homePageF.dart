@@ -4,9 +4,12 @@ import 'package:attendance_app/screens/signIn.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 var studentData = {};
 var locations = [];
+List<String> subDropdownList = [];
+final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
 fetchStudentData() async {
   var data = await db.collection('student_data').get().whenComplete(
@@ -21,6 +24,8 @@ fetchStudentData() async {
         () => print('Locations Fetched'),
       );
   locations = loc.data()!['li'];
+  SharedPreferences prefs = await _prefs;
+  subDropdownList = prefs.getStringList('subjects') ?? [];
 }
 
 class HomePageF extends StatefulWidget {
@@ -30,12 +35,12 @@ class HomePageF extends StatefulWidget {
 
 class _HomePageFState extends State<HomePageF> {
   var user;
-  String? deptF, yearF, divF, batchF, locF;
+  String? deptF, yearF, divF, batchF, locF, subF;
 
   @override
   void initState() {
-    user = getCurrentUser();
     super.initState();
+    user = getCurrentUser();
   }
 
   TitleDDF(String title, List<String> li) {
@@ -64,7 +69,9 @@ class _HomePageFState extends State<HomePageF> {
                           ? batchF
                           : title.split(' ').last == 'Location:'
                               ? locF
-                              : null,
+                              : title.split(' ').last == 'Subject:'
+                                  ? subF
+                                  : null,
           icon: Icon(Icons.arrow_drop_down_rounded),
           iconSize: 30,
           style: TextStyle(
@@ -95,7 +102,9 @@ class _HomePageFState extends State<HomePageF> {
                               ? batchF = newValue
                               : title.split(' ').last == 'Location:'
                                   ? locF = newValue
-                                  : null;
+                                  : title.split(' ').last == 'Subject:'
+                                      ? subF = newValue
+                                      : null;
             });
           },
           focusColor: Colors.transparent,
@@ -269,7 +278,7 @@ class _HomePageFState extends State<HomePageF> {
                       SizedBox(
                         height: 20,
                       ),
-                      TitleDDF('Select Subject:', ['Null']),
+                      TitleDDF('Select Subject:', subDropdownList),
                       SizedBox(
                         height: 10,
                       ),
@@ -283,7 +292,9 @@ class _HomePageFState extends State<HomePageF> {
                               MaterialPageRoute(
                                 builder: (context) => EditSubjects(),
                               ),
-                            );
+                            ).whenComplete(() {
+                              setState(() {});
+                            });
                           },
                           icon: Icon(Icons.edit_rounded),
                           style: IconButton.styleFrom(
