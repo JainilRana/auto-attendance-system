@@ -12,26 +12,28 @@ checkIdType(String mailId) async {
   mailType = 'None';
   if (mailType == 'None') {
     await db.collection('faculty_id').get().then((value) {
-      value.docs.forEach((element) {
+      for (var element in value.docs) {
         if (element.id.toLowerCase() == mailId.toLowerCase()) {
           mailType = 'faculty';
         }
-      });
+      }
     });
   }
   if (mailType == 'None') {
     await db.collection('student_id').get().then((value) {
-      value.docs.forEach((element) {
+      for (var element in value.docs) {
         if (element.id.toLowerCase() == mailId.toLowerCase()) {
           mailType = 'student';
         }
-      });
+      }
     });
   }
   return mailType;
 }
 
 class SignUp extends StatelessWidget {
+  const SignUp({super.key});
+
   @override
   Widget build(BuildContext context) {
     TextEditingController suNameController = TextEditingController();
@@ -49,25 +51,25 @@ class SignUp extends StatelessWidget {
                 child: Text(
                   'Sign Up to your\naccount',
                   style: GoogleFonts.rubik(
-                    textStyle: TextStyle(
+                    textStyle: const TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
 
               // Name field
               TextFormField(
                 autofocus: true,
                 controller: suNameController,
-                cursorRadius: Radius.circular(15),
+                cursorRadius: const Radius.circular(15),
                 maxLines: 1,
                 keyboardType: TextInputType.name,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(15),
-                  prefixIcon: Icon(
+                  contentPadding: const EdgeInsets.all(15),
+                  prefixIcon: const Icon(
                     Icons.person,
                     color: Colors.black,
                   ),
@@ -83,18 +85,18 @@ class SignUp extends StatelessWidget {
                   filled: true,
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               // Email field
               TextFormField(
                 autofocus: true,
                 controller: suEmailController,
-                cursorRadius: Radius.circular(15),
+                cursorRadius: const Radius.circular(15),
                 maxLines: 1,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(15),
-                  prefixIcon: Icon(
+                  contentPadding: const EdgeInsets.all(15),
+                  prefixIcon: const Icon(
                     Icons.email,
                     color: Colors.black,
                   ),
@@ -110,18 +112,18 @@ class SignUp extends StatelessWidget {
                   filled: true,
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               // Password field
               TextFormField(
                 autofocus: true,
                 controller: suPaswdController,
-                cursorRadius: Radius.circular(15),
+                cursorRadius: const Radius.circular(15),
                 maxLines: 1,
                 obscureText: true,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(15),
-                  prefixIcon: Icon(
+                  contentPadding: const EdgeInsets.all(15),
+                  prefixIcon: const Icon(
                     Icons.password_rounded,
                     color: Colors.black,
                   ),
@@ -137,7 +139,7 @@ class SignUp extends StatelessWidget {
                   filled: true,
                 ),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               Row(
                 children: [
                   Expanded(
@@ -204,11 +206,11 @@ class SignUp extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(builder: (context) {
                                     if (getCurrentUser().email == adminId) {
-                                      return HomePageA();
+                                      return const HomePageA();
                                     } else if (mailType == 'faculty') {
-                                      return HomePageF();
+                                      return const HomePageF();
                                     } else {
-                                      return HomePageF();
+                                      return const HomePageF();
                                     }
                                     // else {
                                     //   student homepage return
@@ -246,7 +248,6 @@ class SignUp extends StatelessWidget {
                           print(e);
                         }
                       },
-                      child: Text('Sign Up'),
                       style: TextButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
@@ -254,29 +255,30 @@ class SignUp extends StatelessWidget {
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.black,
                         padding:
-                            EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                            const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
                       ),
+                      child: const Text('Sign Up'),
                     ),
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Already have an account? "),
+                  const Text("Already have an account? "),
                   TextButton(
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SignIn(),
+                            builder: (context) => const SignIn(),
                           ),
                         );
                       },
-                      child: Text('Sign In'))
+                      child: const Text('Sign In'))
                 ],
               ),
             ],

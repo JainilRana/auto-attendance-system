@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EditSubjects extends StatefulWidget {
+  const EditSubjects({super.key});
+
   @override
   State<EditSubjects> createState() => _EditSubjectsState();
 }
@@ -53,7 +55,7 @@ class _EditSubjectsState extends State<EditSubjects> {
           elevation: 0,
           backgroundColor: Colors.transparent,
           foregroundColor: Colors.black,
-          iconTheme: IconThemeData(
+          iconTheme: const IconThemeData(
             size: 30,
           ),
         ),
@@ -68,7 +70,7 @@ class _EditSubjectsState extends State<EditSubjects> {
                     Text(
                       "Subjects",
                       style: GoogleFonts.rubik(
-                        textStyle: TextStyle(
+                        textStyle: const TextStyle(
                           fontSize: 40,
                           fontWeight: FontWeight.w500,
                           // overflow: TextOverflow.fade,
@@ -82,12 +84,12 @@ class _EditSubjectsState extends State<EditSubjects> {
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              buttonPadding: EdgeInsets.all(15),
-                              contentPadding: EdgeInsets.all(25),
+                              buttonPadding: const EdgeInsets.all(15),
+                              contentPadding: const EdgeInsets.all(25),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),
-                              title: Text(
+                              title: const Text(
                                 "Add Subject",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -98,7 +100,7 @@ class _EditSubjectsState extends State<EditSubjects> {
                                   return TextFormField(
                                     cursorColor: Colors.black,
                                     controller: inputController,
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       hintText: 'Enter subject name',
                                       border: UnderlineInputBorder(
                                         borderSide: BorderSide(
@@ -131,7 +133,7 @@ class _EditSubjectsState extends State<EditSubjects> {
                                       borderRadius: BorderRadius.circular(15),
                                     ),
                                   ),
-                                  child: Text("Add"),
+                                  child: const Text("Add"),
                                 ),
                                 TextButton(
                                   onPressed: () {
@@ -144,17 +146,13 @@ class _EditSubjectsState extends State<EditSubjects> {
                                       borderRadius: BorderRadius.circular(15),
                                     ),
                                   ),
-                                  child: Text('Cancel'),
+                                  child: const Text('Cancel'),
                                 ),
                               ],
                             );
                           },
                         );
                       },
-                      child: Icon(
-                        Icons.add,
-                        size: 30,
-                      ),
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.black,
                         foregroundColor: Colors.white,
@@ -162,10 +160,14 @@ class _EditSubjectsState extends State<EditSubjects> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
+                      child: const Icon(
+                        Icons.add,
+                        size: 30,
+                      ),
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Row(
@@ -174,10 +176,10 @@ class _EditSubjectsState extends State<EditSubjects> {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
-                        Text(
+                        const Text(
                           'Update',
                           style: TextStyle(
                             fontSize: 16,
@@ -185,7 +187,7 @@ class _EditSubjectsState extends State<EditSubjects> {
                             color: Colors.blueAccent,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 15,
                         ),
                         Image.asset(
@@ -203,10 +205,10 @@ class _EditSubjectsState extends State<EditSubjects> {
                           height: 35,
                           width: 35,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 15,
                         ),
-                        Text(
+                        const Text(
                           'Delete',
                           style: TextStyle(
                             fontSize: 16,
@@ -214,7 +216,7 @@ class _EditSubjectsState extends State<EditSubjects> {
                             color: Colors.redAccent,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                       ],
@@ -235,14 +237,14 @@ class _EditSubjectsState extends State<EditSubjects> {
                             return Text('Error: ${snapshot.error}');
                           } else {
                             return Padding(
-                              padding: EdgeInsets.symmetric(vertical: 20),
+                              padding: const EdgeInsets.symmetric(vertical: 20),
                               child: ListView.builder(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                padding: const EdgeInsets.symmetric(horizontal: 5),
                                 itemCount: snapshot.data!.length,
                                 itemBuilder: (context, index) {
                                   return Card(
                                     elevation: 5,
-                                    margin: EdgeInsets.symmetric(vertical: 10),
+                                    margin: const EdgeInsets.symmetric(vertical: 10),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),
                                     ),
@@ -250,12 +252,12 @@ class _EditSubjectsState extends State<EditSubjects> {
                                       title: Text(
                                         snapshot.data![index],
                                         style: GoogleFonts.rubik(
-                                          textStyle: TextStyle(
+                                          textStyle: const TextStyle(
                                             fontSize: 20,
                                           ),
                                         ),
                                       ),
-                                      contentPadding: EdgeInsets.all(15),
+                                      contentPadding: const EdgeInsets.all(15),
                                     ),
                                   );
                                 },
