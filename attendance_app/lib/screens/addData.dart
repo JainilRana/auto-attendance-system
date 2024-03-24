@@ -31,6 +31,8 @@ fetchDropdowns() async {
 }
 
 class AddData extends StatefulWidget {
+  const AddData({super.key});
+
   @override
   State<AddData> createState() => _AddDataState();
 }
@@ -42,22 +44,22 @@ class _AddDataState extends State<AddData> {
       future: fetchDropdowns(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         } else {
           return Card(
-            margin: EdgeInsets.all(25),
+            margin: const EdgeInsets.all(25),
             elevation: 10,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
             ),
             child: Padding(
-              padding: EdgeInsets.all(15),
+              padding: const EdgeInsets.all(15),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Text(
+                  const Text(
                     "Add Student Data",
                     style: TextStyle(
                       fontSize: 30,
@@ -111,7 +113,7 @@ class _AddDataState extends State<AddData> {
                             db
                                 .collection('student_id')
                                 .doc(
-                                  excel.tables[table]!
+                                  '${excel.tables[table]!
                                           .selectRangeValues(
                                             CellIndex.indexByColumnRow(
                                                 columnIndex: 0, rowIndex: 1),
@@ -122,8 +124,7 @@ class _AddDataState extends State<AddData> {
                                                   1,
                                             ),
                                           )[i]![0]
-                                          .toString().toLowerCase() +
-                                      '@charusat.edu.in',
+                                          .toString().toLowerCase()}@charusat.edu.in',
                                 )
                                 .set({});
                           }
@@ -206,17 +207,17 @@ class _AddDataState extends State<AddData> {
                       }
                     },
                     style: TextButton.styleFrom(
-                      padding: EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(20),
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.blue,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
-                    icon: Icon(Icons.upload_file_rounded),
-                    label: Text('Upload Excel File'),
+                    icon: const Icon(Icons.upload_file_rounded),
+                    label: const Text('Upload Excel File'),
                   ),
-                  Text(
+                  const Text(
                     "**Upload Excel(.xlsx) file with only two columns, containing all IDs & Names of students (of the selected batch only) with 'ID' & 'Name' as title **",
                     style: TextStyle(
                       fontSize: 12,

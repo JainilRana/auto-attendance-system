@@ -5,6 +5,8 @@ import 'package:excel/excel.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class AddID extends StatefulWidget {
+  const AddID({super.key});
+
   @override
   State<AddID> createState() => _AddIDState();
 }
@@ -16,7 +18,7 @@ class _AddIDState extends State<AddID> {
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: [
-        Text(
+        const Text(
           "Add Faculty ID",
           style: TextStyle(
             fontSize: 30,
@@ -24,13 +26,13 @@ class _AddIDState extends State<AddID> {
           ),
         ),
         Card(
-          margin: EdgeInsets.all(25),
+          margin: const EdgeInsets.all(25),
           elevation: 10,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
           child: Padding(
-            padding: EdgeInsets.all(30),
+            padding: const EdgeInsets.all(30),
             child: TextButton.icon(
               onPressed: () async {
                 FilePickerResult? pickedFile =
@@ -94,18 +96,18 @@ class _AddIDState extends State<AddID> {
                 }
               },
               style: TextButton.styleFrom(
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.blue,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   )),
-              icon: Icon(Icons.upload_file_rounded),
-              label: Text('Upload Excel File'),
+              icon: const Icon(Icons.upload_file_rounded),
+              label: const Text('Upload Excel File'),
             ),
           ),
         ),
-        Text(
+        const Text(
           "**Upload Excel(.xlsx) file with only one column containing all ID's & '${'faculty_id'}' as title**",
           style: TextStyle(
             fontSize: 12,

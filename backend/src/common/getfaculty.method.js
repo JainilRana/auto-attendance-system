@@ -4,13 +4,14 @@ import { db } from "../database/db_connection.js"
 const getFacultyTokens = async (faculty_id) => {
   try {
     const getFaculty = await getDocs(collection(db, "faculty_id"));
+    let token;
     getFaculty.forEach((doc) => {
-      if (doc.id === faculty_id){
-        console.log(faculty_id === doc.id, " ", faculty_id, " ", doc.id, "--", doc.data().uid);
-        return doc.data().uid
-      } 
+      if (doc.id === faculty_id) {
+        token = doc.data().uid;
+        return;
+      }
     });
-    return ""
+    return token
   } catch (e) {
     return e;
   }

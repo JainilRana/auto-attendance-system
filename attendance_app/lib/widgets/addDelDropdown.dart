@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class AddDelDD extends StatefulWidget {
   String title;
-  AddDelDD(this.title);
+  AddDelDD(this.title, {super.key});
   @override
   State<AddDelDD> createState() => _AddDelDDState();
 }
@@ -26,11 +26,11 @@ class _AddDelDDState extends State<AddDelDD> {
           splashRadius: 20,
           iconSize: 30,
           color: Colors.blue,
-          icon: Icon(Icons.remove_circle_outline_rounded),
+          icon: const Icon(Icons.remove_circle_outline_rounded),
         ),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         TitleDropDown(widget.title),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         IconButton.filled(
           onPressed: () {
             inputPopUp(widget.title.split(' ').last, 'Add');
@@ -42,7 +42,7 @@ class _AddDelDDState extends State<AddDelDD> {
             backgroundColor: Colors.blue,
             foregroundColor: Colors.white,
           ),
-          icon: Icon(Icons.add_circle_outline_rounded),
+          icon: const Icon(Icons.add_circle_outline_rounded),
         ),
       ],
     );
@@ -53,22 +53,22 @@ class _AddDelDDState extends State<AddDelDD> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          buttonPadding: EdgeInsets.all(20),
-          contentPadding: EdgeInsets.all(20),
+          buttonPadding: const EdgeInsets.all(20),
+          contentPadding: const EdgeInsets.all(20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
           title: Text(
-            '${operation} ${title}',
-            style: TextStyle(
+            '$operation $title',
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
           content: TextFormField(
             controller: inputController,
             decoration: InputDecoration(
-              hintText: 'Enter ${title}',
-              border: OutlineInputBorder(
+              hintText: 'Enter $title',
+              border: const OutlineInputBorder(
                 borderSide: BorderSide.none,
               ),
               filled: true,
@@ -143,7 +143,7 @@ class _AddDelDDState extends State<AddDelDD> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
           ],
         );

@@ -6,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EditSubjects extends StatefulWidget {
+  const EditSubjects({super.key});
+
   @override
   State<EditSubjects> createState() => _EditSubjectsState();
 }
@@ -137,7 +139,7 @@ class _EditSubjectsState extends State<EditSubjects> {
           elevation: 0,
           backgroundColor: Colors.transparent,
           foregroundColor: Colors.black,
-          iconTheme: IconThemeData(
+          iconTheme: const IconThemeData(
             size: 30,
           ),
         ),
@@ -152,7 +154,7 @@ class _EditSubjectsState extends State<EditSubjects> {
                     Text(
                       "Subjects",
                       style: GoogleFonts.rubik(
-                        textStyle: TextStyle(
+                        textStyle: const TextStyle(
                           fontSize: 40,
                           fontWeight: FontWeight.w500,
                           // overflow: TextOverflow.fade,
@@ -172,10 +174,6 @@ class _EditSubjectsState extends State<EditSubjects> {
                           'Add',
                         );
                       },
-                      child: Icon(
-                        Icons.add,
-                        size: 30,
-                      ),
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.black,
                         foregroundColor: Colors.white,
@@ -183,12 +181,17 @@ class _EditSubjectsState extends State<EditSubjects> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
+                      child: const Icon(
+                        Icons.add,
+                        size: 30,
+                      ),
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
+
                 AnimatedContainer(
                   duration: Duration(seconds: 1),
                   height: contHeight,

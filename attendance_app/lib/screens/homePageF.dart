@@ -15,11 +15,11 @@ fetchStudentData() async {
   var data = await db.collection('student_data').get().whenComplete(
         () => print('Data Fetched'),
       );
-  data.docs.forEach((element) {
+  for (var element in data.docs) {
     studentData.addAll(
       {element.id: element.data()},
     );
-  });
+  }
   var loc = await db.collection('dropdowns').doc('Location').get().whenComplete(
         () => print('Locations Fetched'),
       );
@@ -29,6 +29,8 @@ fetchStudentData() async {
 }
 
 class HomePageF extends StatefulWidget {
+  const HomePageF({super.key});
+
   @override
   _HomePageFState createState() => _HomePageFState();
 }
@@ -49,13 +51,13 @@ class _HomePageFState extends State<HomePageF> {
         Text(
           title,
           style: GoogleFonts.rubik(
-            textStyle: TextStyle(
+            textStyle: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w500,
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           width: 20,
         ),
         DropdownButton<String>(
@@ -112,7 +114,7 @@ class _HomePageFState extends State<HomePageF> {
             height: 1.5,
             color: Colors.grey[800],
           ),
-          hint: Text('--Select--'),
+          hint: const Text('--Select--'),
           borderRadius: BorderRadius.circular(20),
           elevation: 1,
           menuMaxHeight: 200,
@@ -133,7 +135,7 @@ class _HomePageFState extends State<HomePageF> {
       child: Scaffold(
         body: Center(
           child: Padding(
-            padding: EdgeInsets.all(25.0),
+            padding: const EdgeInsets.all(25.0),
             child: Column(
               children: [
                 Row(
@@ -143,7 +145,7 @@ class _HomePageFState extends State<HomePageF> {
                       child: Text(
                         "Hello!!\n${user!.displayName ?? "User"}",
                         style: GoogleFonts.rubik(
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                             fontSize: 40,
                             fontWeight: FontWeight.w500,
                             // overflow: TextOverflow.fade,
@@ -157,14 +159,14 @@ class _HomePageFState extends State<HomePageF> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      offset: Offset(0, 60),
+                      offset: const Offset(0, 60),
                       itemBuilder: (context) {
                         return [
                           PopupMenuItem(
                             enabled: false,
                             child: Text(
                               'Name : ${user!.displayName}',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.black,
                               ),
                             ),
@@ -173,14 +175,14 @@ class _HomePageFState extends State<HomePageF> {
                             enabled: false,
                             child: Text(
                               'Email : ${user!.email}',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.black,
                               ),
                             ),
                           ),
                           PopupMenuItem(
                             child: TextButton(
-                              child: Row(
+                              child: const Row(
                                 children: [
                                   Icon(
                                     Icons.logout,
@@ -204,7 +206,7 @@ class _HomePageFState extends State<HomePageF> {
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => SignIn(),
+                                        builder: (context) => const SignIn(),
                                       ),
                                     );
                                   });
@@ -216,7 +218,7 @@ class _HomePageFState extends State<HomePageF> {
                           ),
                         ];
                       },
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.account_circle_outlined,
                       ),
                       iconSize: 45,
@@ -233,7 +235,7 @@ class _HomePageFState extends State<HomePageF> {
                           studentData.keys.toList(),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       TitleDDF(
@@ -242,7 +244,7 @@ class _HomePageFState extends State<HomePageF> {
                             ? studentData[deptF].keys.toList()
                             : [],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       TitleDDF(
@@ -254,7 +256,7 @@ class _HomePageFState extends State<HomePageF> {
                             ? studentData[deptF][yearF].keys.toList()
                             : [],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       TitleDDF(
@@ -268,14 +270,14 @@ class _HomePageFState extends State<HomePageF> {
                             ? studentData[deptF][yearF][divF].keys.toList()
                             : [],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       TitleDDF(
                         'Select Location:',
                         List<String>.from(locations.toList()),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       TitleDDF('Select Subject:', subDropdownList),
@@ -285,20 +287,20 @@ class _HomePageFState extends State<HomePageF> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: ElevatedButton.icon(
-                          label: Text('Edit Subjects'),
+                          label: const Text('Edit Subjects'),
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => EditSubjects(),
+                                builder: (context) => const EditSubjects(),
                               ),
                             ).whenComplete(() {
                               setState(() {});
                             });
                           },
-                          icon: Icon(Icons.edit_rounded),
+                          icon: const Icon(Icons.edit_rounded),
                           style: IconButton.styleFrom(
-                            padding: EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(10),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -307,7 +309,7 @@ class _HomePageFState extends State<HomePageF> {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 50,
                       ),
                       Row(
@@ -319,14 +321,14 @@ class _HomePageFState extends State<HomePageF> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                padding: EdgeInsets.all(15),
+                                padding: const EdgeInsets.all(15),
                                 backgroundColor: Colors.black,
                                 foregroundColor: Colors.white,
                               ),
                               child: Text(
                                 'Start Attendance',
                                 style: GoogleFonts.rubik(
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w300,
                                   ),

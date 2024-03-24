@@ -8,6 +8,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class SignIn extends StatelessWidget {
+  const SignIn({super.key});
+
   @override
   Widget build(BuildContext context) {
     TextEditingController siEmailController = TextEditingController();
@@ -24,25 +26,25 @@ class SignIn extends StatelessWidget {
                 child: Text(
                   'Sign In to your\naccount',
                   style: GoogleFonts.rubik(
-                    textStyle: TextStyle(
+                    textStyle: const TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
 
               // Email field
               TextFormField(
                 autofocus: true,
                 controller: siEmailController,
-                cursorRadius: Radius.circular(15),
+                cursorRadius: const Radius.circular(15),
                 maxLines: 1,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(15),
-                  prefixIcon: Icon(
+                  contentPadding: const EdgeInsets.all(15),
+                  prefixIcon: const Icon(
                     Icons.email,
                     color: Colors.black,
                   ),
@@ -58,18 +60,18 @@ class SignIn extends StatelessWidget {
                   filled: true,
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               // Password field
               TextFormField(
                 autofocus: true,
                 controller: siPaswdController,
-                cursorRadius: Radius.circular(15),
+                cursorRadius: const Radius.circular(15),
                 maxLines: 1,
                 obscureText: true,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(15),
-                  prefixIcon: Icon(
+                  contentPadding: const EdgeInsets.all(15),
+                  prefixIcon: const Icon(
                     Icons.password_rounded,
                     color: Colors.black,
                   ),
@@ -85,7 +87,7 @@ class SignIn extends StatelessWidget {
                   filled: true,
                 ),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               Row(
                 children: [
                   Expanded(
@@ -132,7 +134,9 @@ class SignIn extends StatelessWidget {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(builder: (context) {
+
                                 return returnScreen;
+
                               }),
                             );
                           });
@@ -151,7 +155,6 @@ class SignIn extends StatelessWidget {
                           );
                         }
                       },
-                      child: Text('Sign In'),
                       style: TextButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
@@ -159,29 +162,30 @@ class SignIn extends StatelessWidget {
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.black,
                         padding:
-                            EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                            const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
                       ),
+                      child: const Text('Sign In'),
                     ),
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Don't have an account? "),
+                  const Text("Don't have an account? "),
                   TextButton(
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SignUp(),
+                            builder: (context) => const SignUp(),
                           ),
                         );
                       },
-                      child: Text('Sign Up'))
+                      child: const Text('Sign Up'))
                 ],
               ),
             ],

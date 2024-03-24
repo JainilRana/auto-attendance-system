@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:attendance_app/firebase_options.dart';
 
-Widget startScreen = SignIn();
+Widget startScreen = const SignIn();
 String adminId = 'admin@charusat.edu.in';
 String adminPass = 'admin123';
 var db = FirebaseFirestore.instance;
@@ -23,9 +23,9 @@ Future<void> main() async {
   );
   FirebaseAuth.instance.authStateChanges().listen((User? user) {
     if (user != null && user.email == adminId) {
-      startScreen = HomePageA();
+      startScreen = const HomePageA();
     } else {
-      startScreen = SignIn();
+      startScreen = const SignIn();
     }
   });
   mailType =
@@ -33,12 +33,14 @@ Future<void> main() async {
   if (mailType == 'faculty') {
     print('Faculty Screen Loaded');
     await fetchStudentData();
-    startScreen = HomePageF();
+    startScreen = const HomePageF();
   } // else if (mailType == 'student') { return student homepage }
-  runApp(MainApp());
+  runApp(const MainApp());
 }
 
 class MainApp extends StatelessWidget {
+  const MainApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

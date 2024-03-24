@@ -18,7 +18,7 @@ class _HomePageAState extends State<HomePageA> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Admin Panel'),
+        title: const Text('Admin Panel'),
         actions: [
           IconButton(
             onPressed: () async {
@@ -27,7 +27,7 @@ class _HomePageAState extends State<HomePageA> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SignIn(),
+                      builder: (context) => const SignIn(),
                     ),
                   );
                 });
@@ -35,7 +35,7 @@ class _HomePageAState extends State<HomePageA> {
                 print(e);
               }
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.logout_rounded,
               color: Colors.white,
             ),
@@ -44,7 +44,7 @@ class _HomePageAState extends State<HomePageA> {
       ),
       body: Center(
         child: Padding(
-          padding: EdgeInsets.all(30),
+          padding: const EdgeInsets.all(30),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -56,18 +56,19 @@ class _HomePageAState extends State<HomePageA> {
                     onPressed: () {
                       setState(() {
                         subPage = 'faculty_id';
+                        print(subPage);
                       });
                     },
-                    icon: Icon(Icons.add_circle_outline_rounded),
+                    icon: const Icon(Icons.add_circle_outline_rounded),
                     style: TextButton.styleFrom(
-                      padding: EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(20),
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.blue,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
-                    label: Text('Add Faculty ID'),
+                    label: const Text('Add Faculty ID'),
                   ),
                   TextButton.icon(
                     onPressed: () {
@@ -75,24 +76,24 @@ class _HomePageAState extends State<HomePageA> {
                         subPage = 'student_data';
                       });
                     },
-                    icon: Icon(Icons.add_circle_outline_rounded),
+                    icon: const Icon(Icons.add_circle_outline_rounded),
                     style: TextButton.styleFrom(
-                      padding: EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(20),
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.blue,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
-                    label: Text('Add Student Data'),
+                    label: const Text('Add Student Data'),
                   ),
                 ],
               ),
               subPage == 'faculty_id'
-                  ? Expanded(
+                  ? const Expanded(
                       child: AddID(),
                     )
-                  : Expanded(
+                  : const Expanded(
                       child: AddData(),
                     ),
             ],
