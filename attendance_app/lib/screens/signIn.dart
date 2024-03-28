@@ -1,6 +1,7 @@
 import 'package:attendance_app/main.dart';
 import 'package:attendance_app/screens/homePageA.dart';
 import 'package:attendance_app/screens/homePageF.dart';
+import 'package:attendance_app/screens/homePageS.dart';
 import 'package:attendance_app/screens/signUp.dart';
 import 'package:attendance_app/utils/notification.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -128,16 +129,15 @@ class SignIn extends StatelessWidget {
                               await fetchStudentData();
                               returnScreen = HomePageF();
                             } else {
-                              returnScreen = HomePageF();
+                              returnScreen = HomePageS();
                             }
-                            // else {
-                            //   student homepage return
-                            // }
                             Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (context) {
-                                return returnScreen;
-                              }),
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return returnScreen;
+                                },
+                              ),
                             );
                             if (mailType == 'student') {
                               String deviceToken =

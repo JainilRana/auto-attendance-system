@@ -1,6 +1,7 @@
 import 'package:attendance_app/main.dart';
 import 'package:attendance_app/screens/editSubjects.dart';
 import 'package:attendance_app/screens/signIn.dart';
+import 'package:attendance_app/screens/studentList.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -143,7 +144,7 @@ class _HomePageFState extends State<HomePageF> {
                   children: [
                     Expanded(
                       child: Text(
-                        "Hello!!\n${user!.displayName ?? "User"}",
+                        "Welcome\n${user!.displayName ?? "User"}",
                         style: GoogleFonts.rubik(
                           textStyle: const TextStyle(
                             fontSize: 40,
@@ -312,31 +313,33 @@ class _HomePageFState extends State<HomePageF> {
                       const SizedBox(
                         height: 50,
                       ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextButton(
-                              onPressed: () {},
-                              style: TextButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                padding: const EdgeInsets.all(15),
-                                backgroundColor: Colors.black,
-                                foregroundColor: Colors.white,
-                              ),
-                              child: Text(
-                                'Start Attendance',
-                                style: GoogleFonts.rubik(
-                                  textStyle: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                ),
-                              ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => StudentList(),
+                            ),
+                          );
+                        },
+                        style: TextButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          minimumSize: Size(double.infinity, 60),
+                          padding: const EdgeInsets.all(15),
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                        ),
+                        child: Text(
+                          'Start Attendance',
+                          style: GoogleFonts.rubik(
+                            textStyle: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300,
                             ),
                           ),
-                        ],
+                        ),
                       ),
                     ],
                   ),

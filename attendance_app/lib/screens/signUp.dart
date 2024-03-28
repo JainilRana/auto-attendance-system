@@ -1,6 +1,7 @@
 import 'package:attendance_app/main.dart';
 import 'package:attendance_app/screens/homePageA.dart';
 import 'package:attendance_app/screens/homePageF.dart';
+import 'package:attendance_app/screens/homePageS.dart';
 import 'package:attendance_app/screens/signIn.dart';
 import 'package:attendance_app/utils/notification.dart';
 import 'package:flutter/material.dart';
@@ -212,11 +213,8 @@ class SignUp extends StatelessWidget {
                                     } else if (mailType == 'faculty') {
                                       return const HomePageF();
                                     } else {
-                                      return const HomePageF();
+                                      return const HomePageS();
                                     }
-                                    // else {
-                                    //   student homepage return
-                                    // }
                                   }),
                                 );
                               });

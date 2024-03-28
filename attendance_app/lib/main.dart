@@ -1,5 +1,6 @@
 import 'package:attendance_app/screens/homePageA.dart';
 import 'package:attendance_app/screens/homePageF.dart';
+import 'package:attendance_app/screens/homePageS.dart';
 import 'package:attendance_app/screens/signIn.dart';
 import 'package:attendance_app/screens/signUp.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -31,10 +32,11 @@ Future<void> main() async {
   mailType =
       await checkIdType(getCurrentUser() != null ? getCurrentUser().email : '');
   if (mailType == 'faculty') {
-    print('Faculty Screen Loaded');
     await fetchStudentData();
     startScreen = const HomePageF();
-  } // else if (mailType == 'student') { return student homepage }
+  } else if (mailType == 'student') {
+    startScreen = const HomePageS();
+  }
   runApp(const MainApp());
 }
 
