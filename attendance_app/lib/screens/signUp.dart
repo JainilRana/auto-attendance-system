@@ -2,6 +2,7 @@ import 'package:attendance_app/main.dart';
 import 'package:attendance_app/screens/homePageA.dart';
 import 'package:attendance_app/screens/homePageF.dart';
 import 'package:attendance_app/screens/signIn.dart';
+import 'package:attendance_app/utils/notification.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -39,6 +40,7 @@ class SignUp extends StatelessWidget {
     TextEditingController suNameController = TextEditingController();
     TextEditingController suEmailController = TextEditingController();
     TextEditingController suPaswdController = TextEditingController();
+    NotificationService notificationService = NotificationService();
     return Scaffold(
       body: Center(
         child: Padding(
@@ -196,7 +198,7 @@ class SignUp extends StatelessWidget {
                             email: suEmailController.text.toString(),
                             password: suPaswdController.text.toString(),
                           )
-                              .then((value) {
+                              .then((value) async {
                             if (getCurrentUser() != null) {
                               getCurrentUser()
                                   .updateDisplayName(
@@ -218,6 +220,16 @@ class SignUp extends StatelessWidget {
                                   }),
                                 );
                               });
+                              if (mailType == 'student') {
+                                String deviceToken =
+                                    await notificationService.getDeviceToken();
+                                db
+                                    .collection('student_id')
+                                    .doc(getCurrentUser().email.toString())
+                                    .set({
+                                  'token': deviceToken,
+                                });
+                              }
                               if (mailType == 'faculty') {
                                 db
                                     .collection('faculty_id')
@@ -254,8 +266,8 @@ class SignUp extends StatelessWidget {
                         ),
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.black,
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 20),
                       ),
                       child: const Text('Sign Up'),
                     ),

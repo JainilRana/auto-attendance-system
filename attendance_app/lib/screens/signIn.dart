@@ -2,6 +2,7 @@ import 'package:attendance_app/main.dart';
 import 'package:attendance_app/screens/homePageA.dart';
 import 'package:attendance_app/screens/homePageF.dart';
 import 'package:attendance_app/screens/signUp.dart';
+import 'package:attendance_app/utils/notification.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,6 +15,7 @@ class SignIn extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController siEmailController = TextEditingController();
     TextEditingController siPaswdController = TextEditingController();
+    NotificationService notificationService = NotificationService();
     return Scaffold(
       body: Center(
         child: Padding(
@@ -134,11 +136,19 @@ class SignIn extends StatelessWidget {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(builder: (context) {
-
                                 return returnScreen;
-
                               }),
                             );
+                            if (mailType == 'student') {
+                              String deviceToken =
+                                  await notificationService.getDeviceToken();
+                              db
+                                  .collection('student_id')
+                                  .doc(getCurrentUser().email.toString())
+                                  .set({
+                                'token': deviceToken,
+                              });
+                            }
                           });
                         } on FirebaseAuthException catch (e) {
                           Fluttertoast.showToast(
@@ -161,8 +171,8 @@ class SignIn extends StatelessWidget {
                         ),
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.black,
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 20),
                       ),
                       child: const Text('Sign In'),
                     ),
