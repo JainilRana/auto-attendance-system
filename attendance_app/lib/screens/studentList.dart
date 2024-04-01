@@ -14,6 +14,7 @@ class _StudentListState extends State<StudentList> {
   // late Future<List<String>> subjectListFuture;
   // late double contHeight;
   // late double contWidth;
+  List<String> editedStudentList = [];
   TextEditingController searchController = TextEditingController();
 
   @override
@@ -77,7 +78,9 @@ class _StudentListState extends State<StudentList> {
                       ),
                     ),
                   ),
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    setState(() {});
+                  },
                   elevation: MaterialStateProperty.all(0),
                   backgroundColor: MaterialStateProperty.all(Colors.grey[300]),
                   padding: MaterialStatePropertyAll(
@@ -105,134 +108,120 @@ class _StudentListState extends State<StudentList> {
                   height: 20,
                 ),
                 Expanded(
-                  child: FutureBuilder(
-                    future: Future.delayed(Duration.zero),
-                    builder: (context, snapshot) {
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.none:
-                        case ConnectionState.waiting:
-                          return const CircularProgressIndicator();
-                        case ConnectionState.active:
-                        case ConnectionState.done:
-                          if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          }
-                          // else if (!snapshot.hasData ||
-                          //     snapshot.data!.length == 0) {
-                          //   return Column(
-                          //     mainAxisAlignment: MainAxisAlignment.center,
-                          //     children: [
-                          //       Image.asset(
-                          //         'assets/NoSub.gif',
-                          //         height: 200,
-                          //         width: 200,
-                          //         fit: BoxFit.contain,
-                          //       ),
-                          //       Text(
-                          //         'Problem in fetching student list.',
-                          //         style: TextStyle(
-                          //           fontSize: 15,
-                          //           fontWeight: FontWeight.w500,
-                          //         ),
-                          //         textAlign: TextAlign.center,
-                          //       ),
-                          //     ],
-                          //   );
-                          // }
-                          else {
-                            return Padding(
-                              padding: EdgeInsets.symmetric(vertical: 0),
-                              child: GlowingOverscrollIndicator(
-                                axisDirection: AxisDirection.down,
-                                color: Colors.black,
-                                child: ListView(
-                                  children: [
-                                    ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: ScrollPhysics(),
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 5),
-                                      // itemCount: snapshot.data!.length,
-                                      itemCount: 10,
-                                      itemBuilder: (context, index) {
-                                        return Card(
-                                          elevation: 0,
-                                          borderOnForeground: false,
-                                          color: Colors.grey[300],
-                                          margin:
-                                              EdgeInsets.symmetric(vertical: 8),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                          ),
-                                          child: CheckboxListTile(
-                                            onChanged: (value) {
-                                              print('Changed');
-                                            },
-                                            title: Text(
-                                              '21CS026',
-                                              // snapshot.data![index],
-                                              style: GoogleFonts.rubik(
-                                                textStyle: TextStyle(
-                                                  fontSize: 20,
-                                                ),
-                                              ),
-                                            ),
-                                            subtitle: Text(
-                                              'Harshal Makwana',
-                                              style: GoogleFonts.rubik(
-                                                textStyle: TextStyle(
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                            ),
-                                            value: false,
-                                            dense: true,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => HomePageF(),
-                                          ),
-                                        );
-                                      },
-                                      style: TextButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        minimumSize: Size(double.infinity, 60),
-                                        padding: const EdgeInsets.all(15),
-                                        backgroundColor: Colors.black,
-                                        foregroundColor: Colors.white,
-                                      ),
-                                      child: Text(
-                                        'Notify Students & Download Attendance',
-                                        style: GoogleFonts.rubik(
-                                          textStyle: const TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w300,
-                                          ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 0),
+                    child: GlowingOverscrollIndicator(
+                      axisDirection: AxisDirection.down,
+                      color: Colors.black,
+                      child: ListView(
+                        children: [
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: ScrollPhysics(),
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            itemCount: apiDATA.length,
+                            itemBuilder: (context, index) {
+                              if (apiDATA[index]['id']
+                                  .toString()
+                                  .substring(
+                                    apiDATA[index]['id'].toString().length - 3,
+                                    apiDATA[index]['id'].toString().length,
+                                  )
+                                  .contains(searchController.text)) {
+                                return Card(
+                                  elevation: 0,
+                                  borderOnForeground: false,
+                                  color: Colors.grey[300],
+                                  margin: EdgeInsets.symmetric(vertical: 8),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: CheckboxListTile(
+                                    onChanged: (value) {
+                                      setState(() {
+                                        apiDATA[index]['present'] =
+                                            value.toString();
+                                      });
+                                      value == true
+                                          ? editedStudentList.add(
+                                              apiDATA[index]['id'].toString())
+                                          : editedStudentList.remove(
+                                              apiDATA[index]['id'].toString());
+                                      print(editedStudentList.toString());
+                                    },
+                                    title: Text(
+                                      apiDATA[index]['id'].toString(),
+                                      style: GoogleFonts.rubik(
+                                        textStyle: TextStyle(
+                                          fontSize: 20,
                                         ),
                                       ),
                                     ),
-                                  ],
+                                    subtitle: Text(
+                                      apiDATA[index]['name'].toString(),
+                                      style: GoogleFonts.rubik(
+                                        textStyle: TextStyle(
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                    value: apiDATA[index]['present'] == 'true'
+                                        ? true
+                                        : false,
+                                    selected:
+                                        apiDATA[index]['present'] == 'true'
+                                            ? true
+                                            : false,
+                                    selectedTileColor: Colors.green[300],
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    activeColor: Colors.black,
+                                    checkColor: Colors.white,
+                                    dense: true,
+                                  ),
+                                );
+                              } else {
+                                return SizedBox.shrink();
+                              }
+                            },
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomePageF(),
+                                ),
+                              );
+                            },
+                            style: TextButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              minimumSize: Size(double.infinity, 60),
+                              padding: const EdgeInsets.all(15),
+                              backgroundColor: Colors.black,
+                              foregroundColor: Colors.white,
+                            ),
+                            child: Text(
+                              'Notify Students & Download Attendance',
+                              style: GoogleFonts.rubik(
+                                textStyle: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w300,
                                 ),
                               ),
-                            );
-                          }
-                      }
-                    },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                )
+                ),
               ],
             ),
           ),

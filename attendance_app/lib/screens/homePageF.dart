@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:attendance_app/main.dart';
 import 'package:attendance_app/screens/editSubjects.dart';
 import 'package:attendance_app/screens/signIn.dart';
@@ -6,10 +8,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
+var apiDATA = [
+  {"name": "G H", "id": "21CS004", "present": "true"},
+  {"name": "Harshiv Kinariwala", "id": "21CS016", "present": "true"},
+  {"name": "E F", "id": "21CS003", "present": "false"},
+  {"name": "Bhavi Patel", "id": "21CS039", "present": "false"},
+  {"name": "Vinas Mangroliya", "id": "21CS029", "present": "true"},
+  {"name": "Hamir Mandha", "id": "21CS028", "present": "false"},
+  {"name": "A B", "id": "21CS001", "present": "false"},
+  {"name": "I J", "id": "21CS005", "present": "false"},
+  {"name": "Jainil Rana", "id": "21CS054", "present": "true"},
+  {"name": "C D", "id": "21CS002", "present": "false"},
+];
 var studentData = {};
 var locations = [];
 List<String> subDropdownList = [];
+
 final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
 fetchStudentData() async {
@@ -38,6 +54,7 @@ class HomePageF extends StatefulWidget {
 
 class _HomePageFState extends State<HomePageF> {
   var user;
+  String buttonDetails = 'start';
   String? deptF, yearF, divF, batchF, locF, subF;
 
   @override
@@ -128,6 +145,39 @@ class _HomePageFState extends State<HomePageF> {
         ),
       ],
     );
+  }
+
+  sendAndFetchData(String boolean) async {
+    try {
+      print(user.email.toString());
+      final response = await http.post(
+        Uri.parse(
+            'https://rarely-advanced-ape.ngrok-free.app/api/v1/labcamera/active?lab_Number=$locF&setStatus=$boolean'),
+        body: json.encode(
+          {
+            "teacherId": user.email.toString(),
+            "Department": deptF.toString(),
+            "Year": yearF.toString(),
+            "Div": divF.toString(),
+            "Batch": batchF.toString(),
+            "Subject": subF.toString(),
+          },
+        ),
+        headers: {
+          'Content-Type': 'application/json',
+          'api_key': user.uid.toString(),
+        },
+      );
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        var data;
+        data = json.decode(response.body);
+        apiDATA = data['data'][1];
+        print(apiDATA);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -314,25 +364,42 @@ class _HomePageFState extends State<HomePageF> {
                         height: 50,
                       ),
                       TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => StudentList(),
-                            ),
-                          );
-                        },
+                        onPressed: buttonDetails == 'start'
+                            ? () async {
+                                setState(() {
+                                  buttonDetails = 'stop';
+                                });
+                                await sendAndFetchData('true');
+                              }
+                            : () async {
+                                await sendAndFetchData('false');
+                                if (apiDATA != null && apiDATA.length > 0) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => StudentList(),
+                                    ),
+                                  );
+                                }
+                                setState(() {
+                                  buttonDetails = 'start';
+                                });
+                              },
                         style: TextButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                           minimumSize: Size(double.infinity, 60),
                           padding: const EdgeInsets.all(15),
-                          backgroundColor: Colors.black,
+                          backgroundColor: buttonDetails == 'start'
+                              ? Colors.black
+                              : Colors.red,
                           foregroundColor: Colors.white,
                         ),
                         child: Text(
-                          'Start Attendance',
+                          buttonDetails == 'start'
+                              ? 'Start Attendance'
+                              : 'Stop Attendance',
                           style: GoogleFonts.rubik(
                             textStyle: const TextStyle(
                               fontSize: 15,
