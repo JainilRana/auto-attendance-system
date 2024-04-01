@@ -31,7 +31,7 @@ const app = express();
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  projectId: 'attendance-app-8569d'
+  projectId: process.env.project_id
 });
 app.use(express.json({ limit: "30kb" }));
 
