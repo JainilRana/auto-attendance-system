@@ -132,7 +132,6 @@ class _EditSubjectsState extends State<EditSubjects> {
 
   @override
   Widget build(BuildContext context) {
-    print('SetStateCalled');
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(

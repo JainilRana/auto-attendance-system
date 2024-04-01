@@ -16,6 +16,8 @@ dependencies:
   fluttertoast: ^8.2.4
   shared_preferences: ^2.2.2
   cloud_firestore: ^4.14.0
+  firebase_messaging: ^14.7.10
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:
