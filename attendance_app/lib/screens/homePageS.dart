@@ -119,7 +119,31 @@ class _HomePageSState extends State<HomePageS> {
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [],
+                    children: [
+                      // Card(
+                      //   child: ListView.builder(
+                      //     itemBuilder: (context, index) {
+                      //       return ListTile(
+                      //         title: Text(
+                      //           'Subject ${index + 1}',
+                      //           style: const TextStyle(
+                      //             fontSize: 20,
+                      //           ),
+                      //         ),
+                      //         subtitle: Text(
+                      //           'Attendance : 100%',
+                      //           style: const TextStyle(
+                      //             fontSize: 15,
+                      //           ),
+                      //         ),
+                      //         trailing: const Icon(
+                      //           Icons.arrow_forward_ios,
+                      //         ),
+                      //       );
+                      //     },
+                      //   ),
+                      // )
+                    ],
                   ),
                 ),
               ],
