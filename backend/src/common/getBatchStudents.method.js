@@ -9,7 +9,6 @@ const getBatchStudents = async (requestBody) => {
   // get list of student for firebase.
   try {
     const studentList = await (await getDoc(doc(db, 'student_data', `${Department}`))).get(`${Year}`)
-    // console.log('done call',studentList[Div][Batch]);
     // Assuming studentList[Div][Batch] is an object with key-value pairs
     const studentMap = new Map(Object.entries(studentList[Div][Batch]));
     // console.log(studentMap.entries());
