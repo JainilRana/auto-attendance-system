@@ -190,7 +190,6 @@ class _EditSubjectsState extends State<EditSubjects> {
                 const SizedBox(
                   height: 20,
                 ),
-
                 AnimatedContainer(
                   duration: Duration(seconds: 1),
                   height: contHeight,
@@ -267,7 +266,7 @@ class _EditSubjectsState extends State<EditSubjects> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Image.asset(
-                                  'assets/NoSub.gif',
+                                  'assets/Notfound.gif',
                                   height: 200,
                                   width: 200,
                                   fit: BoxFit.contain,

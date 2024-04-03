@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:attendance_app/screens/homePageF.dart';
+import 'package:attendance_app/screens/homePageS.dart';
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
 
 class StudentList extends StatefulWidget {
   const StudentList({super.key});
@@ -190,7 +195,79 @@ class _StudentListState extends State<StudentList> {
                             height: 20,
                           ),
                           TextButton(
-                            onPressed: () {
+                            onPressed: () async {
+                              try {
+                                var excel = Excel.createExcel();
+                                Sheet sheetObject = excel['Sheet1'];
+                                sheetObject
+                                        .cell(CellIndex.indexByString('A1'))
+                                        .value =
+                                    TextCellValue('Department: $deptF');
+                                sheetObject
+                                    .cell(CellIndex.indexByString('A2'))
+                                    .value = TextCellValue('Division: $divF');
+                                sheetObject
+                                    .cell(CellIndex.indexByString('A3'))
+                                    .value = TextCellValue('Batch: $batchF');
+                                sheetObject
+                                    .cell(CellIndex.indexByString('A4'))
+                                    .value = TextCellValue('Subject: $subF');
+                                sheetObject
+                                        .cell(CellIndex.indexByString('A5'))
+                                        .value =
+                                    TextCellValue('Date: ${formatter.format(
+                                          DateTime.now(),
+                                        ).toString()}');
+                                sheetObject
+                                        .cell(CellIndex.indexByString('A6'))
+                                        .value =
+                                    TextCellValue('Time: ${timeFormatter.format(
+                                          DateTime.now(),
+                                        ).toString()}');
+                                sheetObject
+                                    .cell(CellIndex.indexByString('A8'))
+                                    .value = TextCellValue('ID');
+                                sheetObject
+                                    .cell(CellIndex.indexByString('B8'))
+                                    .value = TextCellValue('Name');
+                                sheetObject
+                                    .cell(CellIndex.indexByString('C8'))
+                                    .value = TextCellValue('Attendance');
+                                for (int i = 0; i < apiDATA.length; i++) {
+                                  sheetObject
+                                      .cell(
+                                          CellIndex.indexByString('A${i + 9}'))
+                                      .value = TextCellValue(apiDATA[i]
+                                          ['id']
+                                      .toString());
+                                  sheetObject
+                                      .cell(
+                                          CellIndex.indexByString('B${i + 9}'))
+                                      .value = TextCellValue(apiDATA[i]
+                                          ['name']
+                                      .toString());
+                                  sheetObject
+                                      .cell(
+                                          CellIndex.indexByString('C${i + 9}'))
+                                      .value = TextCellValue(apiDATA[i]
+                                                  ['present']
+                                              .toString() ==
+                                          'true'
+                                      ? 'Present'
+                                      : 'Absent');
+                                }
+                                var fileBytes = excel.save();
+                                var pathOfTheFile =
+                                    "/storage/emulated/0/Download/$deptF-$divF-$batchF-$subF-${formatter.format(
+                                          DateTime.now(),
+                                        ).toString()}-${timeFormatter.format(DateTime.now()).toString().replaceAll(' ', '-').replaceAll(':', '_')}.xlsx";
+                                File(pathOfTheFile)
+                                  ..createSync(recursive: true)
+                                  ..writeAsBytesSync(fileBytes ?? []);
+                                print('File saved at $pathOfTheFile');
+                              } catch (e) {
+                                print(e);
+                              }
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

@@ -24,6 +24,7 @@ var apiDATA = [
 ];
 var studentData = {};
 var locations = [];
+String? deptF, yearF, divF, batchF, locF, subF;
 List<String> subDropdownList = [];
 
 final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
@@ -55,7 +56,6 @@ class HomePageF extends StatefulWidget {
 class _HomePageFState extends State<HomePageF> {
   var user;
   String buttonDetails = 'start';
-  String? deptF, yearF, divF, batchF, locF, subF;
 
   @override
   void initState() {
