@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:attendance_app/main.dart';
 import 'package:attendance_app/screens/homePageF.dart';
 import 'package:attendance_app/screens/homePageS.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 
 class StudentList extends StatefulWidget {
   const StudentList({super.key});
@@ -15,12 +18,105 @@ class StudentList extends StatefulWidget {
 }
 
 class _StudentListState extends State<StudentList> {
-  // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  // late Future<List<String>> subjectListFuture;
-  // late double contHeight;
-  // late double contWidth;
+  var user;
   List<String> editedStudentList = [];
   TextEditingController searchController = TextEditingController();
+
+  void initState() {
+    super.initState();
+    user = getCurrentUser();
+  }
+
+  notifyStudentAndDownloadExcel() async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+            'http://rarely-advanced-ape.ngrok-free.app/api/v1/classAttend/notifyStudent'),
+        body: json.encode(
+          {
+            "teacherId": user.email.toString(),
+            "subject": subF.toString(),
+            "list": editedStudentList,
+          },
+        ),
+        headers: {
+          'Content-Type': 'application/json',
+          'api_key': user.uid.toString(),
+        },
+      );
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        var data;
+        data = json.decode(response.body);
+        apiDATA = data['data'][1];
+      } else {
+        return;
+      }
+    } catch (e) {
+      print(e);
+      return;
+    }
+    try {
+      var excel = Excel.createExcel();
+      Sheet sheetObject = excel['Sheet1'];
+      sheetObject.cell(CellIndex.indexByString('A1')).value =
+          TextCellValue('Department: $deptF');
+      sheetObject.cell(CellIndex.indexByString('A2')).value =
+          TextCellValue('Division: $divF');
+      sheetObject.cell(CellIndex.indexByString('A3')).value =
+          TextCellValue('Batch: $batchF');
+      sheetObject.cell(CellIndex.indexByString('A4')).value =
+          TextCellValue('Subject: $subF');
+      sheetObject.cell(CellIndex.indexByString('A5')).value =
+          TextCellValue('Date: ${formatter.format(
+                DateTime.now(),
+              ).toString()}');
+      sheetObject.cell(CellIndex.indexByString('A6')).value =
+          TextCellValue('Time: ${timeFormatter.format(
+                DateTime.now(),
+              ).toString()}');
+      sheetObject.cell(CellIndex.indexByString('A8')).value =
+          TextCellValue('ID');
+      sheetObject.cell(CellIndex.indexByString('B8')).value =
+          TextCellValue('Name');
+      sheetObject.cell(CellIndex.indexByString('C8')).value =
+          TextCellValue('Attendance');
+      for (int i = 0; i < apiDATA.length; i++) {
+        sheetObject.cell(CellIndex.indexByString('A${i + 9}')).value =
+            TextCellValue(apiDATA[i]['id'].toString());
+        sheetObject.cell(CellIndex.indexByString('B${i + 9}')).value =
+            TextCellValue(apiDATA[i]['name'].toString());
+        sheetObject.cell(CellIndex.indexByString('C${i + 9}')).value =
+            TextCellValue(apiDATA[i]['present'].toString() == 'true'
+                ? 'Present'
+                : 'Absent');
+      }
+      var fileBytes = excel.save();
+      var pathOfTheFile =
+          "/storage/emulated/0/Download/$deptF-$divF-$batchF-$subF-${formatter.format(
+                DateTime.now(),
+              ).toString()}-${timeFormatter.format(DateTime.now()).toString().replaceAll(' ', '-').replaceAll(':', '_')}.xlsx";
+      File(pathOfTheFile)
+        ..createSync(recursive: true)
+        ..writeAsBytesSync(fileBytes ?? []);
+      print('File saved at $pathOfTheFile');
+    } catch (e) {
+      print(e);
+    }
+    Fluttertoast.showToast(
+      msg: "Excel Downloaded Successfully.",
+      backgroundColor: Colors.green,
+      fontSize: 20,
+      textColor: Colors.white,
+      gravity: ToastGravity.BOTTOM,
+    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomePageF(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,21 +149,6 @@ class _StudentListState extends State<StudentList> {
                       ),
                       overflow: TextOverflow.fade,
                     ),
-                    // TextButton(
-                    //   onPressed: () {
-                    //   },
-                    //   style: TextButton.styleFrom(
-                    //     backgroundColor: Colors.black,
-                    //     foregroundColor: Colors.white,
-                    //     shape: RoundedRectangleBorder(
-                    //       borderRadius: BorderRadius.circular(15),
-                    //     ),
-                    //   ),
-                    //   child: const Icon(
-                    //     Icons.add,
-                    //     size: 30,
-                    //   ),
-                    // ),
                   ],
                 ),
                 const SizedBox(
@@ -196,84 +277,7 @@ class _StudentListState extends State<StudentList> {
                           ),
                           TextButton(
                             onPressed: () async {
-                              try {
-                                var excel = Excel.createExcel();
-                                Sheet sheetObject = excel['Sheet1'];
-                                sheetObject
-                                        .cell(CellIndex.indexByString('A1'))
-                                        .value =
-                                    TextCellValue('Department: $deptF');
-                                sheetObject
-                                    .cell(CellIndex.indexByString('A2'))
-                                    .value = TextCellValue('Division: $divF');
-                                sheetObject
-                                    .cell(CellIndex.indexByString('A3'))
-                                    .value = TextCellValue('Batch: $batchF');
-                                sheetObject
-                                    .cell(CellIndex.indexByString('A4'))
-                                    .value = TextCellValue('Subject: $subF');
-                                sheetObject
-                                        .cell(CellIndex.indexByString('A5'))
-                                        .value =
-                                    TextCellValue('Date: ${formatter.format(
-                                          DateTime.now(),
-                                        ).toString()}');
-                                sheetObject
-                                        .cell(CellIndex.indexByString('A6'))
-                                        .value =
-                                    TextCellValue('Time: ${timeFormatter.format(
-                                          DateTime.now(),
-                                        ).toString()}');
-                                sheetObject
-                                    .cell(CellIndex.indexByString('A8'))
-                                    .value = TextCellValue('ID');
-                                sheetObject
-                                    .cell(CellIndex.indexByString('B8'))
-                                    .value = TextCellValue('Name');
-                                sheetObject
-                                    .cell(CellIndex.indexByString('C8'))
-                                    .value = TextCellValue('Attendance');
-                                for (int i = 0; i < apiDATA.length; i++) {
-                                  sheetObject
-                                      .cell(
-                                          CellIndex.indexByString('A${i + 9}'))
-                                      .value = TextCellValue(apiDATA[i]
-                                          ['id']
-                                      .toString());
-                                  sheetObject
-                                      .cell(
-                                          CellIndex.indexByString('B${i + 9}'))
-                                      .value = TextCellValue(apiDATA[i]
-                                          ['name']
-                                      .toString());
-                                  sheetObject
-                                      .cell(
-                                          CellIndex.indexByString('C${i + 9}'))
-                                      .value = TextCellValue(apiDATA[i]
-                                                  ['present']
-                                              .toString() ==
-                                          'true'
-                                      ? 'Present'
-                                      : 'Absent');
-                                }
-                                var fileBytes = excel.save();
-                                var pathOfTheFile =
-                                    "/storage/emulated/0/Download/$deptF-$divF-$batchF-$subF-${formatter.format(
-                                          DateTime.now(),
-                                        ).toString()}-${timeFormatter.format(DateTime.now()).toString().replaceAll(' ', '-').replaceAll(':', '_')}.xlsx";
-                                File(pathOfTheFile)
-                                  ..createSync(recursive: true)
-                                  ..writeAsBytesSync(fileBytes ?? []);
-                                print('File saved at $pathOfTheFile');
-                              } catch (e) {
-                                print(e);
-                              }
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => HomePageF(),
-                                ),
-                              );
+                              await notifyStudentAndDownloadExcel();
                             },
                             style: TextButton.styleFrom(
                               shape: RoundedRectangleBorder(

@@ -10,18 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-var apiDATA = [
-  {"name": "G H", "id": "21CS004", "present": "true"},
-  {"name": "Harshiv Kinariwala", "id": "21CS016", "present": "true"},
-  {"name": "E F", "id": "21CS003", "present": "false"},
-  {"name": "Bhavi Patel", "id": "21CS039", "present": "false"},
-  {"name": "Vinas Mangroliya", "id": "21CS029", "present": "true"},
-  {"name": "Hamir Mandha", "id": "21CS028", "present": "false"},
-  {"name": "A B", "id": "21CS001", "present": "false"},
-  {"name": "I J", "id": "21CS005", "present": "false"},
-  {"name": "Jainil Rana", "id": "21CS054", "present": "true"},
-  {"name": "C D", "id": "21CS002", "present": "false"},
-];
+var apiDATA = [];
 var studentData = {};
 var locations = [];
 String? deptF, yearF, divF, batchF, locF, subF;
@@ -70,8 +59,8 @@ class _HomePageFState extends State<HomePageF> {
           title,
           style: GoogleFonts.rubik(
             textStyle: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
+              fontSize: 18,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ),
@@ -149,7 +138,6 @@ class _HomePageFState extends State<HomePageF> {
 
   sendAndFetchData(String boolean) async {
     try {
-      print(user.email.toString());
       final response = await http.post(
         Uri.parse(
             'https://rarely-advanced-ape.ngrok-free.app/api/v1/labcamera/active?lab_Number=$locF&setStatus=$boolean'),
@@ -173,7 +161,23 @@ class _HomePageFState extends State<HomePageF> {
         var data;
         data = json.decode(response.body);
         apiDATA = data['data'][1];
-        print(apiDATA);
+        if (boolean == 'true') {
+          setState(() {
+            buttonDetails = 'stop';
+          });
+        } else {
+          if (apiDATA != null && apiDATA.length > 0) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => StudentList(),
+              ),
+            );
+          }
+          setState(() {
+            buttonDetails = 'start';
+          });
+        }
       }
     } catch (e) {
       print(e);
@@ -366,24 +370,10 @@ class _HomePageFState extends State<HomePageF> {
                       TextButton(
                         onPressed: buttonDetails == 'start'
                             ? () async {
-                                setState(() {
-                                  buttonDetails = 'stop';
-                                });
                                 await sendAndFetchData('true');
                               }
                             : () async {
                                 await sendAndFetchData('false');
-                                if (apiDATA != null && apiDATA.length > 0) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => StudentList(),
-                                    ),
-                                  );
-                                }
-                                setState(() {
-                                  buttonDetails = 'start';
-                                });
                               },
                         style: TextButton.styleFrom(
                           shape: RoundedRectangleBorder(
