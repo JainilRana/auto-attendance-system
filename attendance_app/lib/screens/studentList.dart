@@ -96,7 +96,7 @@ class _StudentListState extends State<StudentList> {
         sheetObject.cell(CellIndex.indexByString('B${i + 9}')).value =
             TextCellValue(apiDATA[i]['name'].toString());
         sheetObject.cell(CellIndex.indexByString('C${i + 9}')).value =
-            TextCellValue(apiDATA[i]['present'].toString() == true
+            TextCellValue(apiDATA[i]['present'].toString() == 'true'
                 ? 'Present'
                 : 'Absent');
       }
