@@ -160,12 +160,13 @@ class _HomePageFState extends State<HomePageF> {
       if (response.statusCode == 200) {
         var data;
         data = json.decode(response.body);
-        apiDATA = data['data'][1];
         if (boolean == 'true') {
           setState(() {
             buttonDetails = 'stop';
           });
         } else {
+          apiDATA = data['data'][1];
+          print(apiDATA.toString());
           if (apiDATA != null && apiDATA.length > 0) {
             Navigator.push(
               context,

@@ -28,15 +28,24 @@ class _StudentListState extends State<StudentList> {
   }
 
   notifyStudentAndDownloadExcel() async {
+    List<String> absentStudentList = [];
+    for (var element in apiDATA.where((element) {
+      return element['present'] == false;
+    }).toList()) {
+      absentStudentList.add(element['id'].toString());
+    }
+    print(editedStudentList.toString());
+    print(absentStudentList.toString());
     try {
-      final response = await http.post(
+      final response = await http.put(
         Uri.parse(
-            'http://rarely-advanced-ape.ngrok-free.app/api/v1/classAttend/notifyStudent'),
+            'https://rarely-advanced-ape.ngrok-free.app/api/v1/classAttend/notifyStudent'),
         body: json.encode(
           {
             "teacherId": user.email.toString(),
             "subject": subF.toString(),
-            "list": editedStudentList,
+            "updateList": editedStudentList,
+            "absentList": absentStudentList,
           },
         ),
         headers: {
@@ -48,7 +57,7 @@ class _StudentListState extends State<StudentList> {
       if (response.statusCode == 200) {
         var data;
         data = json.decode(response.body);
-        apiDATA = data['data'][1];
+        print(data);
       } else {
         return;
       }
@@ -87,7 +96,7 @@ class _StudentListState extends State<StudentList> {
         sheetObject.cell(CellIndex.indexByString('B${i + 9}')).value =
             TextCellValue(apiDATA[i]['name'].toString());
         sheetObject.cell(CellIndex.indexByString('C${i + 9}')).value =
-            TextCellValue(apiDATA[i]['present'].toString() == 'true'
+            TextCellValue(apiDATA[i]['present'].toString() == true
                 ? 'Present'
                 : 'Absent');
       }
@@ -99,7 +108,6 @@ class _StudentListState extends State<StudentList> {
       File(pathOfTheFile)
         ..createSync(recursive: true)
         ..writeAsBytesSync(fileBytes ?? []);
-      print('File saved at $pathOfTheFile');
     } catch (e) {
       print(e);
     }
@@ -225,15 +233,13 @@ class _StudentListState extends State<StudentList> {
                                   child: CheckboxListTile(
                                     onChanged: (value) {
                                       setState(() {
-                                        apiDATA[index]['present'] =
-                                            value.toString();
+                                        apiDATA[index]['present'] = value;
                                       });
                                       value == true
                                           ? editedStudentList.add(
                                               apiDATA[index]['id'].toString())
                                           : editedStudentList.remove(
                                               apiDATA[index]['id'].toString());
-                                      print(editedStudentList.toString());
                                     },
                                     title: Text(
                                       apiDATA[index]['id'].toString(),
@@ -251,13 +257,12 @@ class _StudentListState extends State<StudentList> {
                                         ),
                                       ),
                                     ),
-                                    value: apiDATA[index]['present'] == 'true'
+                                    value: apiDATA[index]['present'] == true
                                         ? true
                                         : false,
-                                    selected:
-                                        apiDATA[index]['present'] == 'true'
-                                            ? true
-                                            : false,
+                                    selected: apiDATA[index]['present'] == true
+                                        ? true
+                                        : false,
                                     selectedTileColor: Colors.green[300],
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15),
