@@ -1,5 +1,7 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { initializeApp} from "firebase/app";
+import { Firestore, collection, getFirestore } from "firebase/firestore";
+import { getCurrentDate } from "../utils/getCurrentTime.js";
+import { admin } from "../app.js";
 
 const firebaseConfig = {
     apiKey: process.env.apiKey,
@@ -13,4 +15,8 @@ const firebaseConfig = {
 const app=initializeApp(firebaseConfig);
 const db=getFirestore(app);
 
-export {db};
+
+
+export {
+    db,
+};

@@ -21,9 +21,6 @@ const getBatchStudents = async (requestBody) => {
     console.log(`get student batch error ${e} `);
   }
 
-  // convert to a well format in json.
-  // return json.
-
 }
 
 class student {
