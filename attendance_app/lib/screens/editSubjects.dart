@@ -266,7 +266,7 @@ class _EditSubjectsState extends State<EditSubjects> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Image.asset(
-                                  'assets/Notfound.gif',
+                                  'assets/NotFound.gif',
                                   height: 200,
                                   width: 200,
                                   fit: BoxFit.contain,
