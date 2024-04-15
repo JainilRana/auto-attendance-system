@@ -7,27 +7,32 @@ const onLabCamera = asyncHandler(async (req, res) => {
     const requestBody = req.body;
     const labNumber = req.query.lab_Number;
     const setStatus = req.query.setStatus;
+    console.log(typeof setStatus, setStatus);
     // for start camera.
     if (typeof labNumber == 'string' && setStatus == 'true') {
+        // call camrea api.
         res.json(
             new ApiResponse(200, requestBody, `camera Active ${setStatus} lab Number ${labNumber}`)
         );
     }
     // for stop camera and return json.
-    if (typeof labNumber == 'string' && setStatus == 'false') {
+    else if (typeof labNumber == 'string' && setStatus == 'false') {
         const detectedList = await getPresentID();
         const batchList = await getBatchStudents(requestBody);
-        // const sendmessage=await sendNotification(detectedList);
+        // // const sendmessage=await sendNotification(detectedList);
         if (Number(batchList ?? 0) == 0) return res.json(new ApiResponse(200, [], "No student in  batch"))
-        const batchDetectedList = getOnlyPresentList(detectedList, batchList);
-        const response = sendNotification(batchDetectedList,req.body.Subject);
-        if(!response) console.log(response);
+        const { presentIds,__ } = getOnlyPresentList(detectedList, batchList);
+        // console.log(presentIds, "--", absentList);
+        const response = sendNotification(presentIds, req.body.Subject);
+        if (!response) console.log(response);
         return res.json(new ApiResponse(200, [requestBody, batchList], "detected Student List"))
     }
     // Invaild Request.
-    res.status(404).json(
-        new ApiResponse(404, null, "Invaid request")
-    )
+    else {
+        res.status(404).json(
+            new ApiResponse(404, null, "Invaid request")
+        )
+    }
 
 })
 
@@ -37,23 +42,33 @@ const getPresentID = async () => {
 }
 function getOnlyPresentList(detectedList, batchStudens) {
     const presentIds = new Array();
+    const absentList = new Array();
     batchStudens.forEach((obj) => {
+        let id = getemailIds(obj.id);
         if (detectedList.includes(obj.id)) {
             obj.set(true);
-            let id=getemailIds(obj.id);
             presentIds.push(id);
+        } else {
+            absentList.push(id);
         }
     })
-    return presentIds;
+    return { presentIds, absentList };
 }
-function getemailIds(str){
-    const number=str.toString();
-    let id=number.replace('CS','cs');
-    id+="@charusat.edu.in";
-    console.log("id",id);
+function getemailIds(str) {
+    const number = str.toString();
+    let id = number.replace('CS', 'cs');
+    id += "@charusat.edu.in";
+    console.log("id", id);
+    return id;
+}
+function getIdFromEmail(str) {
+    const number = str.toString();
+    let id = number.replace('cs', 'CS').replace("@charusat.edu.in", "");
     return id;
 }
 export {
     onLabCamera,
-    getPresentID
+    getPresentID,
+    getemailIds,
+    getIdFromEmail
 }
