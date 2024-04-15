@@ -33,15 +33,21 @@ checkIdType(String mailId) async {
   return mailType;
 }
 
-class SignUp extends StatelessWidget {
+class SignUp extends StatefulWidget {
   const SignUp({super.key});
 
+  @override
+  State<SignUp> createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     TextEditingController suNameController = TextEditingController();
     TextEditingController suEmailController = TextEditingController();
     TextEditingController suPaswdController = TextEditingController();
     NotificationService notificationService = NotificationService();
+    ValueNotifier processing = ValueNotifier(false);
     return Scaffold(
       body: Center(
         child: Padding(
@@ -148,6 +154,7 @@ class SignUp extends StatelessWidget {
                   Expanded(
                     child: TextButton(
                       onPressed: () async {
+                        processing.value = true;
                         bool flag = false;
                         if (suNameController.text.isEmpty ||
                             suEmailController.text.isEmpty ||
@@ -168,6 +175,7 @@ class SignUp extends StatelessWidget {
                             webPosition: "center",
                             webShowClose: true,
                           );
+                          processing.value = false;
                           return;
                         }
                         if (flag == false) {
@@ -191,6 +199,7 @@ class SignUp extends StatelessWidget {
                             webPosition: "center",
                             webShowClose: true,
                           );
+                          processing.value = false;
                           return;
                         }
                         try {
@@ -205,6 +214,7 @@ class SignUp extends StatelessWidget {
                                   .updateDisplayName(
                                       suNameController.text.toString())
                                   .then((value) {
+                                processing.value = false;
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(builder: (context) {
@@ -242,6 +252,7 @@ class SignUp extends StatelessWidget {
                             }
                           });
                         } on FirebaseAuthException catch (e) {
+                          processing.value = false;
                           Fluttertoast.showToast(
                             msg: e.message.toString(),
                             backgroundColor: Colors.red,
@@ -255,6 +266,7 @@ class SignUp extends StatelessWidget {
                             webShowClose: true,
                           );
                         } catch (e) {
+                          processing.value = false;
                           print(e);
                         }
                       },
@@ -267,7 +279,24 @@ class SignUp extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 20),
                       ),
-                      child: const Text('Sign Up'),
+                      child: ValueListenableBuilder(
+                        valueListenable: processing,
+                        builder: (context, value, child) {
+                          if (value == true) {
+                            return SizedBox(
+                              height: 18,
+                              width: 18,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeCap: StrokeCap.round,
+                                strokeWidth: 2,
+                              ),
+                            );
+                          } else {
+                            return const Text('Sign Up');
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ],

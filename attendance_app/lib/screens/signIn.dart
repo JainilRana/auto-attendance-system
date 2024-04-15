@@ -9,14 +9,20 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class SignIn extends StatelessWidget {
+class SignIn extends StatefulWidget {
   const SignIn({super.key});
 
+  @override
+  State<SignIn> createState() => _SignInState();
+}
+
+class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     TextEditingController siEmailController = TextEditingController();
     TextEditingController siPaswdController = TextEditingController();
     NotificationService notificationService = NotificationService();
+    ValueNotifier processing = ValueNotifier(false);
     return Scaffold(
       body: Center(
         child: Padding(
@@ -96,6 +102,7 @@ class SignIn extends StatelessWidget {
                   Expanded(
                     child: TextButton(
                       onPressed: () async {
+                        processing.value = true;
                         mailType = await checkIdType(
                           siEmailController.text.toString(),
                         );
@@ -113,6 +120,7 @@ class SignIn extends StatelessWidget {
                             webPosition: "center",
                             webShowClose: true,
                           );
+                          processing.value = false;
                           return;
                         }
                         try {
@@ -131,6 +139,7 @@ class SignIn extends StatelessWidget {
                             } else {
                               returnScreen = HomePageS();
                             }
+                            processing.value = false;
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -151,6 +160,7 @@ class SignIn extends StatelessWidget {
                             }
                           });
                         } on FirebaseAuthException catch (e) {
+                          processing.value = false;
                           Fluttertoast.showToast(
                             msg: e.message.toString(),
                             backgroundColor: Colors.red,
@@ -163,6 +173,9 @@ class SignIn extends StatelessWidget {
                             webPosition: "center",
                             webShowClose: true,
                           );
+                        } catch (e) {
+                          processing.value = false;
+                          print(e);
                         }
                       },
                       style: TextButton.styleFrom(
@@ -174,7 +187,24 @@ class SignIn extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 20),
                       ),
-                      child: const Text('Sign In'),
+                      child: ValueListenableBuilder(
+                        valueListenable: processing,
+                        builder: (context, value, child) {
+                          if (value == true) {
+                            return SizedBox(
+                              height: 18,
+                              width: 18,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeCap: StrokeCap.round,
+                                strokeWidth: 2,
+                              ),
+                            );
+                          } else {
+                            return const Text('Sign In');
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ],

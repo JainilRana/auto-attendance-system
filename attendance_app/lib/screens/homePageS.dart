@@ -199,14 +199,27 @@ class _HomePageSState extends State<HomePageS> {
                             return Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 15,
+                                ),
+                                Text(
+                                  'Today\'s Attendance',
+                                  style: GoogleFonts.rubik(
+                                    textStyle: TextStyle(
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                ),
                                 Card(
                                   margin: EdgeInsets.fromLTRB(
                                     10,
-                                    50,
+                                    15,
                                     10,
                                     0,
                                   ),
-                                  elevation: 20,
+                                  elevation: 0,
+                                  color: Colors.grey[200],
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),
                                   ),
@@ -226,13 +239,14 @@ class _HomePageSState extends State<HomePageS> {
                                                   .data()['title'],
                                           style: GoogleFonts.rubik(
                                             textStyle: TextStyle(
-                                              fontSize: 20,
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.w100,
                                             ),
                                           ),
                                         ),
                                         contentPadding: EdgeInsets.symmetric(
                                           horizontal: 15,
-                                          vertical: 5,
+                                          vertical: 0,
                                         ),
                                         dense: true,
                                       );

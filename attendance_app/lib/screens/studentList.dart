@@ -59,10 +59,24 @@ class _StudentListState extends State<StudentList> {
         data = json.decode(response.body);
         print(data);
       } else {
+        Fluttertoast.showToast(
+          msg: "Something went wrong!!",
+          backgroundColor: Colors.red,
+          fontSize: 20,
+          textColor: Colors.white,
+          gravity: ToastGravity.BOTTOM,
+        );
         return;
       }
     } catch (e) {
       print(e);
+      Fluttertoast.showToast(
+        msg: "Something went wrong!!",
+        backgroundColor: Colors.red,
+        fontSize: 20,
+        textColor: Colors.white,
+        gravity: ToastGravity.BOTTOM,
+      );
       return;
     }
     try {
