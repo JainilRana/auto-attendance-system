@@ -246,14 +246,22 @@ class _StudentListState extends State<StudentList> {
                                   ),
                                   child: CheckboxListTile(
                                     onChanged: (value) {
-                                      setState(() {
-                                        apiDATA[index]['present'] = value;
-                                      });
-                                      value == true
-                                          ? editedStudentList.add(
-                                              apiDATA[index]['id'].toString())
-                                          : editedStudentList.remove(
-                                              apiDATA[index]['id'].toString());
+                                      if (apiDATA[index]['present'] == true &&
+                                          !editedStudentList.contains(
+                                              apiDATA[index]['id']
+                                                  .toString())) {
+                                        return;
+                                      } else {
+                                        setState(() {
+                                          apiDATA[index]['present'] = value!;
+                                        });
+                                        value == true
+                                            ? editedStudentList.add(
+                                                apiDATA[index]['id'].toString())
+                                            : editedStudentList.remove(
+                                                apiDATA[index]['id']
+                                                    .toString());
+                                      }
                                     },
                                     title: Text(
                                       apiDATA[index]['id'].toString(),

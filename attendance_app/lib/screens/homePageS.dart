@@ -77,9 +77,8 @@ class _HomePageSState extends State<HomePageS> {
                         "Welcome\n${user!.displayName ?? "User"}",
                         style: GoogleFonts.rubik(
                           textStyle: const TextStyle(
-                            fontSize: 40,
+                            fontSize: 37,
                             fontWeight: FontWeight.w500,
-                            // overflow: TextOverflow.fade,
                           ),
                         ),
                         overflow: TextOverflow.fade,

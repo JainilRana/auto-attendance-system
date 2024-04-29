@@ -12,6 +12,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 var apiDATA = [];
+// [
+//   {"name": "Yashu Ranaparia", "id": "21CS055", "present": false},
+//   {"name": "Het Soni", "id": "21CS068", "present": true},
+//   {"name": "Harshal Makwana", "id": "21CS026", "present": false},
+//   {"name": "Joy Shah", "id": "21CS062", "present": true},
+//   {"name": "Jainil Rana", "id": "21CS054", "present": true},
+//   {"name": "Aakash Saraiya", "id": "21CS058", "present": false},
+//   {"name": "Nirav Prajapati", "id": "21CS051", "present": true}
+// ];
 var studentData = {};
 var locations = [];
 String? deptF, yearF, divF, batchF, locF, subF;
@@ -46,6 +55,7 @@ class HomePageF extends StatefulWidget {
 class _HomePageFState extends State<HomePageF> {
   var user;
   String buttonDetails = 'start';
+  ValueNotifier processing = ValueNotifier(false);
 
   @override
   void initState() {
@@ -139,6 +149,7 @@ class _HomePageFState extends State<HomePageF> {
 
   sendAndFetchData(String boolean) async {
     try {
+      processing.value = true;
       final response = await http.post(
         Uri.parse(
             'https://rarely-advanced-ape.ngrok-free.app/api/v1/labcamera/active?lab_Number=$locF&setStatus=$boolean'),
@@ -157,11 +168,22 @@ class _HomePageFState extends State<HomePageF> {
           'api_key': user.uid.toString(),
         },
       );
+      processing.value = false;
       print(response.statusCode);
       if (response.statusCode == 200) {
         var data;
         data = json.decode(response.body);
         if (boolean == 'true') {
+          if (data['data']['active'] == false) {
+            Fluttertoast.showToast(
+              msg: data['data']['info'].toString(),
+              backgroundColor: Colors.red,
+              fontSize: 15,
+              textColor: Colors.white,
+              gravity: ToastGravity.BOTTOM,
+            );
+            return;
+          }
           setState(() {
             buttonDetails = 'stop';
           });
@@ -218,9 +240,8 @@ class _HomePageFState extends State<HomePageF> {
                         "Welcome\n${user!.displayName ?? "User"}",
                         style: GoogleFonts.rubik(
                           textStyle: const TextStyle(
-                            fontSize: 40,
+                            fontSize: 37,
                             fontWeight: FontWeight.w500,
-                            // overflow: TextOverflow.fade,
                           ),
                         ),
                         overflow: TextOverflow.fade,
@@ -384,36 +405,59 @@ class _HomePageFState extends State<HomePageF> {
                       const SizedBox(
                         height: 50,
                       ),
-                      TextButton(
-                        onPressed: buttonDetails == 'start'
-                            ? () async {
-                                await sendAndFetchData('true');
-                              }
-                            : () async {
-                                await sendAndFetchData('false');
-                              },
-                        style: TextButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          minimumSize: Size(double.infinity, 60),
-                          padding: const EdgeInsets.all(15),
-                          backgroundColor: buttonDetails == 'start'
-                              ? Colors.black
-                              : Colors.red,
-                          foregroundColor: Colors.white,
-                        ),
-                        child: Text(
-                          buttonDetails == 'start'
-                              ? 'Start Attendance'
-                              : 'Stop Attendance',
-                          style: GoogleFonts.rubik(
-                            textStyle: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w300,
+                      ValueListenableBuilder(
+                        valueListenable: processing,
+                        builder: (context, value, child) {
+                          return TextButton(
+                            onPressed: buttonDetails == 'start'
+                                ? () async {
+                                    await sendAndFetchData('true');
+                                  }
+                                : () async {
+                                    await sendAndFetchData('false');
+                                  },
+                            // () {
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) => StudentList(),
+                            //     ),
+                            //   );
+                            // },
+                            style: TextButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              minimumSize: Size(double.infinity, 60),
+                              padding: const EdgeInsets.all(15),
+                              backgroundColor: buttonDetails == 'start'
+                                  ? Colors.black
+                                  : Colors.red,
+                              foregroundColor: Colors.white,
                             ),
-                          ),
-                        ),
+                            child: value == false
+                                ? Text(
+                                    buttonDetails == 'start'
+                                        ? 'Start Attendance'
+                                        : 'Stop Attendance',
+                                    style: GoogleFonts.rubik(
+                                      textStyle: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                    ),
+                                  )
+                                : SizedBox(
+                                    height: 18,
+                                    width: 18,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeCap: StrokeCap.round,
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                          );
+                        },
                       ),
                     ],
                   ),

@@ -48,6 +48,7 @@ class _SignUpState extends State<SignUp> {
     TextEditingController suPaswdController = TextEditingController();
     NotificationService notificationService = NotificationService();
     ValueNotifier processing = ValueNotifier(false);
+    ValueNotifier obscureTxt = ValueNotifier(true);
     return Scaffold(
       body: Center(
         child: Padding(
@@ -124,29 +125,48 @@ class _SignUpState extends State<SignUp> {
               const SizedBox(height: 20),
 
               // Password field
-              TextFormField(
-                autofocus: true,
-                controller: suPaswdController,
-                cursorRadius: const Radius.circular(15),
-                maxLines: 1,
-                obscureText: true,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(15),
-                  prefixIcon: const Icon(
-                    Icons.password_rounded,
-                    color: Colors.black,
-                  ),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  hintText: 'Password',
-                  hintStyle: TextStyle(
-                    color: Colors.grey[500],
-                  ),
-                  fillColor: Colors.grey[100],
-                  filled: true,
-                ),
+              ValueListenableBuilder(
+                valueListenable: obscureTxt,
+                builder: (context, value, child) {
+                  return TextFormField(
+                    autofocus: true,
+                    controller: suPaswdController,
+                    cursorRadius: const Radius.circular(15),
+                    maxLines: 1,
+                    obscureText: value,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(15),
+                      prefixIcon: const Icon(
+                        Icons.password_rounded,
+                        color: Colors.black,
+                      ),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          obscureTxt.value = !obscureTxt.value;
+                        },
+                        color: Colors.grey,
+                        icon: value
+                            ? Icon(
+                                Icons.visibility_rounded,
+                              )
+                            : Icon(
+                                Icons.visibility_off_rounded,
+                              ),
+                        splashRadius: 0.1,
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      hintText: 'Password',
+                      hintStyle: TextStyle(
+                        color: Colors.grey[500],
+                      ),
+                      fillColor: Colors.grey[100],
+                      filled: true,
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 40),
               Row(
