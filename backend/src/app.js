@@ -36,6 +36,7 @@ admin.initializeApp({
 app.use(express.json({ limit: "30kb" }));
 const dbRef=admin.firestore();
 const messageRef=dbRef.collection('notifications');
+const labCameraRef=dbRef.collection('labCamera');
 
 import cameraRoute from "./routes/cameraAccess.route.js"
 import notifyStudentRoute from "./routes/notifyStudent.route.js"
@@ -46,4 +47,4 @@ const BASE_URL = process.env.baseURL;
 
 app.use(`${BASE_URL}/labcamera`, verifyTokenMiddleware, checkCameraStatus, cameraRoute)
 app.use(`${BASE_URL}/classAttend`, verifyTokenMiddleware, notifyStudentRoute)
-export { app, admin ,messageRef}
+export { app, admin ,messageRef,labCameraRef}

@@ -1,16 +1,21 @@
+import axios from "axios";
+import { labCameraRef } from "../app.js";
 import { getBatchStudents } from "../common/getBatchStudents.method.js";
 import { sendNotification } from "../common/sendNotification.method.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
+
 const onLabCamera = asyncHandler(async (req, res) => {
     const requestBody = req.body;
     const labNumber = req.query.lab_Number;
     const setStatus = req.query.setStatus;
-    console.log(typeof setStatus, setStatus);
     // for start camera.
     if (typeof labNumber == 'string' && setStatus == 'true') {
-        // call camrea api.
+        await axios.get(`${process.env.CAMERA_START_URI}`).then((response)=>
+             console.log(response)
+        ).catch((e)=>console.log("error while start camera",e));
+        await setCameraStatus(labNumber,setStatus,requestBody.teacherId);
         res.json(
             new ApiResponse(200, requestBody, `camera Active ${setStatus} lab Number ${labNumber}`)
         );
@@ -19,12 +24,10 @@ const onLabCamera = asyncHandler(async (req, res) => {
     else if (typeof labNumber == 'string' && setStatus == 'false') {
         const detectedList = await getPresentID();
         const batchList = await getBatchStudents(requestBody);
-        // // const sendmessage=await sendNotification(detectedList);
         if (Number(batchList ?? 0) == 0) return res.json(new ApiResponse(200, [], "No student in  batch"))
-        const { presentIds,__ } = getOnlyPresentList(detectedList, batchList);
-        // console.log(presentIds, "--", absentList);
+        const { presentIds,__ } = getOnlyPresentList(detectedList, batchList);   
         const response = sendNotification(presentIds, req.body.Subject);
-        if (!response) console.log(response);
+        await setCameraStatus(labNumber,setStatus,requestBody.teacherId);
         return res.json(new ApiResponse(200, [requestBody, batchList], "detected Student List"))
     }
     // Invaild Request.
@@ -35,10 +38,27 @@ const onLabCamera = asyncHandler(async (req, res) => {
     }
 
 })
+const setCameraStatus=async(lab_Number,setStatus,id)=>{
+    if(setStatus=='false') id="";
+   try {
+    labCameraRef.doc(lab_Number).set({
+        'status':setStatus,
+        'activeBy':id
+    })
 
+   } catch (error) {
+      console.log(`error while add camrea status : ${error}`);
+   }
+}
 const getPresentID = async () => {
     // get detected StudentList.
-    return ['21CS054', '21CS028']
+    let listofStudent=[];
+    await axios.get(`${process.env.GET_ATTENDANCE_URI}`).then((response)=>{
+         console.log(response.data)
+         listofStudent=response.data
+        }
+    ).catch((e)=>console.log("error while get present id:",e));
+    return listofStudent;
 }
 function getOnlyPresentList(detectedList, batchStudens) {
     const presentIds = new Array();

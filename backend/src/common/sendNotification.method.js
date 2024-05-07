@@ -3,14 +3,14 @@ import { admin } from "../app.js"
 import { storeMessage } from "./storeToFirebase.method.js";
 import { getIdFromEmail } from "../controllers/camera.controllers.js";
 const sendNotification=async(studentlist,subject,absentList)=>{
-    console.log(studentlist,absentList);
+    console.log("list of present Student::",studentlist,absentList);
     let getDeviceToken= await getStudentDeviceToken(studentlist);
     let getDeviceTokenForab=await getStudentDeviceToken(absentList);
     if (getDeviceToken.size == 0) return false;
     const messages = [];
     const studentId=[];
-    // console.log("present::",getDeviceToken);
-    // console.log("absent::",getDeviceTokenForab);
+    console.log("present Token::",getDeviceToken);
+    console.log("absent::",getDeviceTokenForab);
     const mapStudentMessage=new Map();
     getDeviceToken.forEach((token,id)=>{
         console.log("token:", token);

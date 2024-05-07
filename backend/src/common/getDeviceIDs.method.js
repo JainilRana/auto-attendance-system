@@ -8,15 +8,12 @@ const getStudentDeviceToken=async (studentIds)=>{
         const DeviceToken=await getDocs(collection(db,'student_id'));
         const studentDeviceToken=new Map();
         DeviceToken.forEach(doc => {
-          console.log('get device id',doc.id);
           if(studentIds.includes(doc.id)){
-            console.log("type of token: ",typeof doc.data()?.token, typeof doc.data()?.token!==typeof undefined);
                if(typeof doc.data()?.token!==typeof undefined){
                    studentDeviceToken.set(doc.id,doc.data().token);
                   }else{
                   studentDeviceToken.set(doc.id,undefined);
                }
-               console.log("token : ",doc.data().token);
           }
         });
         return studentDeviceToken;
