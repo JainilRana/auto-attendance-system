@@ -8,7 +8,6 @@ async function storeMessage(listOfMessage) {
     try {
         listOfMessage.forEach((message, value) => {
             const getRef = messageRef.doc(value).collection(curDate);
-            console.log(message, "--->", value);
             getRef.add({ 'title': message.title, 'message': message.body, 'sortingTime': timestamp.toDate() });
         });    
         return true;
