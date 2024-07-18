@@ -126,8 +126,7 @@ class _SignInState extends State<SignIn> {
                         mailType = await checkIdType(
                           siEmailController.text.toString(),
                         );
-                        if (mailType == 'None' &&
-                            siEmailController.text != adminId) {
+                        if (mailType == 'None') {
                           Fluttertoast.showToast(
                             msg: 'Please use institute email id.',
                             backgroundColor: Colors.red,
@@ -151,7 +150,7 @@ class _SignInState extends State<SignIn> {
                           )
                               .then((value) async {
                             var returnScreen;
-                            if (getCurrentUser().email == adminId) {
+                            if (mailType == 'admin') {
                               returnScreen = HomePageA();
                             } else if (mailType == 'faculty') {
                               await fetchStudentData();

@@ -13,8 +13,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:attendance_app/firebase_options.dart';
 
 Widget startScreen = const SignIn();
-String adminId = 'admin@charusat.edu.in';
-String adminPass = 'admin123';
 var db = FirebaseFirestore.instance;
 
 getCurrentUser() {
@@ -66,16 +64,11 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  FirebaseAuth.instance.authStateChanges().listen((User? user) {
-    if (user != null && user.email == adminId) {
-      startScreen = const HomePageA();
-    } else {
-      startScreen = const SignIn();
-    }
-  });
   mailType =
       await checkIdType(getCurrentUser() != null ? getCurrentUser().email : '');
-  if (mailType == 'faculty') {
+  if (mailType == 'admin') {
+    startScreen = const HomePageA();
+  } else if (mailType == 'faculty') {
     await fetchStudentData();
     startScreen = const HomePageF();
   } else if (mailType == 'student') {

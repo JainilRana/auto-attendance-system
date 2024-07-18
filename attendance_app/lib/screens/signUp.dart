@@ -13,6 +13,15 @@ String mailType = 'None';
 checkIdType(String mailId) async {
   mailType = 'None';
   if (mailType == 'None') {
+    await db.collection('admin_id').get().then((value) {
+      for (var element in value.docs) {
+        if (element.id.toLowerCase() == mailId.toLowerCase()) {
+          mailType = 'admin';
+        }
+      }
+    });
+  }
+  if (mailType == 'None') {
     await db.collection('faculty_id').get().then((value) {
       for (var element in value.docs) {
         if (element.id.toLowerCase() == mailId.toLowerCase()) {
@@ -202,7 +211,9 @@ class _SignUpState extends State<SignUp> {
                           mailType = await checkIdType(
                               suEmailController.text.toString());
                           print(mailType);
-                          if (mailType == 'faculty' || mailType == 'student') {
+                          if (mailType == 'faculty' ||
+                              mailType == 'student' ||
+                              mailType == 'admin') {
                             flag = true;
                           }
                         }
@@ -238,7 +249,7 @@ class _SignUpState extends State<SignUp> {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(builder: (context) {
-                                    if (getCurrentUser().email == adminId) {
+                                    if (mailType == 'admin') {
                                       return const HomePageA();
                                     } else if (mailType == 'faculty') {
                                       return const HomePageF();
